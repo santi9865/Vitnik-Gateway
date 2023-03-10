@@ -34,6 +34,7 @@ public class BehaviourPlayerCollisionDetector : MonoBehaviour
                 break;
             case "Moneda":
                 scriptMovimientoJugador.ColisionObstaculo(ObstacleType.Moneda);
+                other.gameObject.GetComponent<BehaviourMoneda>().Destruir();
                 break;
             case "ColliderInicioPista":
                 scriptMovimientoJugador.NuevaSeccionPista(other.gameObject);

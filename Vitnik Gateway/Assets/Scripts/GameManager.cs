@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
     public static GameManager Instancia {get; private set;}
     public int Monedas { get; private set;} = 0;
 
+    [SerializeField] private HUDManager hudManager;
+
     private void Awake()
     {
         if(Instancia == null)
@@ -43,6 +45,6 @@ public class GameManager : MonoBehaviour
             Monedas += cantidad;
         }
 
-        Debug.Log(Monedas);
+        hudManager.ActualizarMonedas();
     }
 }

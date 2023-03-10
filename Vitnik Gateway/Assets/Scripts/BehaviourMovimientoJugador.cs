@@ -43,9 +43,6 @@ public class BehaviourMovimientoJugador : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        DebugAltura(true);
-
         if(vivo)
         {
             MoverseHaciaAdelante();
