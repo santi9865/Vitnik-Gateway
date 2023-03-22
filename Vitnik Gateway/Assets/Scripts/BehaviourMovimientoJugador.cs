@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class BehaviourMovimientoJugador : MonoBehaviour
 {
-    [SerializeField] private float speed;
-    [SerializeField] private float jumpForce;
+    [SerializeField] private float velocidad;
+    [SerializeField] private float distanciaMaximaSalto;
+    [SerializeField] private float alturaBase;
     private Rigidbody rb;
     [SerializeField] private bool vivo = true;
     [SerializeField] private List<Transform> carriles;
@@ -25,6 +26,12 @@ public class BehaviourMovimientoJugador : MonoBehaviour
     private bool cambiandoCarril;
     private Vector3 carrilInicial;
     private Vector3 carrilFinal;
+
+
+    private bool saltando;
+    private float timerSalto;
+    private float tiempoMaximoSalto;
+    
 
     private BehaviourPlayerCollisionDetector detectorColisiones;
 
@@ -91,6 +98,12 @@ public class BehaviourMovimientoJugador : MonoBehaviour
                 CambiarACarril();
                 ContarTimerCambioCarril();
             }
+
+            if(saltando)
+            {
+                ContarTimerSalto();
+                EjecutarTrayectoriaSalto();
+            }
     }
 
 
@@ -105,7 +118,7 @@ public class BehaviourMovimientoJugador : MonoBehaviour
             Levantar();
         }
     }
-        private void Deslizar()
+    private void Deslizar()
     {
         //Solo se actualiza el collider si no se está deslizando actualmente.
         if(!deslizando)
@@ -207,18 +220,39 @@ public class BehaviourMovimientoJugador : MonoBehaviour
 
     #endregion
 
-
+    #region Salto
     private void MoverseHaciaAdelante()
     {
-        gameObject.transform.Translate(Vector3.forward * speed * Time.deltaTime);
+        gameObject.transform.Translate(Vector3.forward * velocidad * Time.deltaTime);
+    }
+
+    private void ContarTimerSalto()
+    {
+        timerSalto += Time.fixedDeltaTime;
+
+        if(timerSalto >= tiempoMaximoSalto)
+        {
+            timerSalto = 0;
+            saltando = false;
+        }
     }
 
     private void Saltar()
     {
         Levantar();
-        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        tiempoMaximoSalto = distanciaMaximaSalto / velocidad;
+        saltando = true;        
+        //rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         animatorJugador.SetTrigger("salto");
     }
+    private void EjecutarTrayectoriaSalto()
+    {
+        float altura = (-4 * Mathf.Pow(timerSalto / tiempoMaximoSalto, 2) + 4 * (timerSalto / tiempoMaximoSalto)) * alturaMaxima;
+
+        gameObject.transform.position = new Vector3(gameObject.transform.position.x, altura + alturaBase, gameObject.transform.position.z);
+    }
+
+    #endregion
 
     //Este m�todo es llamado por el script del detector de colisiones del jugador
     public void ColisionObstaculo(ObstacleType tipoObstaculo)

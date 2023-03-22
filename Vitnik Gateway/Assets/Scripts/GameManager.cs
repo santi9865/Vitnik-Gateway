@@ -12,15 +12,15 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if(Instancia == null)
-        {
-            Instancia = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        // if(Instancia == null)
+        // {
+        //     Instancia = this;
+        //     DontDestroyOnLoad(gameObject);
+        // }
+        // else
+        // {
+        //     Destroy(gameObject);
+        // }
     }
 
     public void PauseGame()
