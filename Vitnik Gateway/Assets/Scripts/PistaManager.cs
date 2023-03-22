@@ -7,16 +7,12 @@ public class PistaManager : MonoBehaviour
     [SerializeField] private List<GameObject> pistas;
     [SerializeField] private Vector3 offset;
 
+    private ObstaculoManager obstaculoManager;
+
     // Start is called before the first frame update
     void Start()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        obstaculoManager = GetComponent<ObstaculoManager>();
     }
 
     public void CircularPistas()
@@ -32,5 +28,7 @@ public class PistaManager : MonoBehaviour
         pistas.Add(pistaRemovida);
 
         pistaRemovida.SetActive(true);
+
+        obstaculoManager.SpawnearObstaculo(pistas[pistas.Count - 1], pistas[0]);
     }
 }

@@ -5,6 +5,9 @@ using UnityEngine;
 public class BehaviourPista : MonoBehaviour
 {
     [SerializeField] private PistaManager pistaManager;
+    [SerializeField] private float longitud;
+
+    public float Longitud {get => longitud;}
 
     // Start is called before the first frame update
     void Start()
@@ -20,11 +23,8 @@ public class BehaviourPista : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-
-
         if(other.gameObject.CompareTag("Player"))
         {
-            Debug.Log("Alguien entro al trigger");
             pistaManager.CircularPistas();
         }
     }
