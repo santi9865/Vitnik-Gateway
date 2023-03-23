@@ -6,6 +6,7 @@ public class BehaviourMovimientoJugador : MonoBehaviour
 {
     [SerializeField] private float velocidad;
     [SerializeField] private float distanciaMaximaSalto;
+    [SerializeField] private float distanciaMaximaDesliz;
     [SerializeField] private float alturaBase;
     private Rigidbody rb;
     [SerializeField] private bool vivo = true;
@@ -17,9 +18,9 @@ public class BehaviourMovimientoJugador : MonoBehaviour
     [SerializeField] private Vector3 tamañoColliderNormal;
     [SerializeField] private Vector3 centroColliderDesliz;
     [SerializeField] private Vector3 tamañoColliderDesliz;
-    [SerializeField] private float tiempoMaximoDesliz;
     [SerializeField] private float tiempoMaximoCambioCarril;
     private float timerDesliz;
+    private float tiempoMaximoDesliz;
     private bool deslizando;
 
     private float timerCambioCarril;
@@ -64,25 +65,34 @@ public class BehaviourMovimientoJugador : MonoBehaviour
         {
             MoverseHaciaAdelante();
 
-            if (Input.GetKeyDown(KeyCode.Space))
+            if(Input.GetKeyDown(KeyCode.Space))
             {
-                Saltar();
+                if(!saltando && !cambiandoCarril)
+                {
+                    Saltar();
+                }
             }
-
             if(Input.GetKeyDown(KeyCode.RightArrow))
             {
-                MoverseALaDerecha();
+                if(!cambiandoCarril && !deslizando)
+                {
+                    MoverseALaDerecha();
+                }
             }
             if(Input.GetKeyDown(KeyCode.LeftArrow))
             {
-                MoverseALaIzquierda();
+                if(!cambiandoCarril && !deslizando)
+                {
+                    MoverseALaIzquierda();
+                }
             }
             if(Input.GetKeyDown(KeyCode.DownArrow))
             {
-                Deslizar();
+                if(!cambiandoCarril && !saltando)
+                {
+                    Deslizar();
+                }
             }
-
-
         }
     }
 
@@ -111,9 +121,9 @@ public class BehaviourMovimientoJugador : MonoBehaviour
 
     private void ContarTimerDesliz()
     {
-        timerDesliz -= Time.deltaTime;
+        timerDesliz += Time.deltaTime;
 
-        if(timerDesliz <= 0)
+        if(timerDesliz >= tiempoMaximoDesliz)
         {
             Levantar();
         }
@@ -126,8 +136,8 @@ public class BehaviourMovimientoJugador : MonoBehaviour
             detectorColisiones.ActualizarCollider(centroColliderDesliz, tamañoColliderDesliz);
         }
 
-        timerDesliz = tiempoMaximoDesliz;
-
+        tiempoMaximoDesliz = distanciaMaximaDesliz / velocidad;
+        timerDesliz = 0;
         deslizando = true;
         animatorJugador.SetBool("deslizando", true);
     }
@@ -179,9 +189,9 @@ public class BehaviourMovimientoJugador : MonoBehaviour
         //Produce error porque no se puede usar Mathf.Pow para sacar raíces con exponentes impares de números negativos
         //Mathf.Clamp((Mathf.Pow(((2 / tiempoMaximoCambioCarril) * Mathf.Pow(0.5F,3)) * (timerCambioCarril) - Mathf.Pow(0.5F,3), 1F/3F) + 0.5F), 0, 1);
 
-        Debug.Log("timer: " + timerCambioCarril);
+        //Debug.Log("timer: " + timerCambioCarril);
         //Debug.Log("timer por 0.5f^3: " + Mathf.Pow(0.5F,3) * (timerCambioCarril));
-        Debug.Log("interpolador: " + interpolador);
+        //Debug.Log("interpolador: " + interpolador);
 
         gameObject.transform.position = new Vector3(Vector3.Lerp(carrilInicial,carrilFinal,interpolador).x, gameObject.transform.position.y, gameObject.transform.position.z);
     }
@@ -221,10 +231,7 @@ public class BehaviourMovimientoJugador : MonoBehaviour
     #endregion
 
     #region Salto
-    private void MoverseHaciaAdelante()
-    {
-        gameObject.transform.Translate(Vector3.forward * velocidad * Time.deltaTime);
-    }
+
 
     private void ContarTimerSalto()
     {
@@ -241,8 +248,7 @@ public class BehaviourMovimientoJugador : MonoBehaviour
     {
         Levantar();
         tiempoMaximoSalto = distanciaMaximaSalto / velocidad;
-        saltando = true;        
-        //rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        saltando = true;
         animatorJugador.SetTrigger("salto");
     }
     private void EjecutarTrayectoriaSalto()
@@ -254,6 +260,10 @@ public class BehaviourMovimientoJugador : MonoBehaviour
 
     #endregion
 
+    private void MoverseHaciaAdelante()
+    {
+        gameObject.transform.Translate(Vector3.forward * velocidad * Time.deltaTime);
+    }
     //Este m�todo es llamado por el script del detector de colisiones del jugador
     public void ColisionObstaculo(ObstacleType tipoObstaculo)
     {
