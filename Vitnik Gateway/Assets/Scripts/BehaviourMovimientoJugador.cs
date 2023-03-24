@@ -8,7 +8,6 @@ public class BehaviourMovimientoJugador : MonoBehaviour
     [SerializeField] private float distanciaMaximaSalto;
     [SerializeField] private float distanciaMaximaDesliz;
     [SerializeField] private float alturaBase;
-    private Rigidbody rb;
     [SerializeField] private bool vivo = true;
     [SerializeField] private List<Transform> carriles;
     [SerializeField] private int carrilActual = 1;
@@ -49,13 +48,6 @@ public class BehaviourMovimientoJugador : MonoBehaviour
         detectorColisiones = gameObject.GetComponentInChildren<BehaviourPlayerCollisionDetector>();
 
         animatorJugador = gameObject.GetComponentInChildren<Animator>();
-
-        rb = gameObject.GetComponent<Rigidbody>();
-
-        if(rb == null)
-        {
-            Debug.Log("Rigidbody not found.");
-        }
     }
 
     // Update is called once per frame

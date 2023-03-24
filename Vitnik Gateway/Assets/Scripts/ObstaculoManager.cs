@@ -13,11 +13,61 @@ public class ObstaculoManager : MonoBehaviour
     [SerializeField] private Vector3 posicionUltimoObstaculo;
 
     [SerializeField] private GameObject prefabObstaculo;
+    [SerializeField] private int tamañoPool;
+    [SerializeField] private GameObject contenedorObstaculos;
+
+    private List<GameObject> poolObstaculos;
+
+
+    void Start()
+    {
+        poolObstaculos = new List<GameObject>();
+
+        for(int i = 0; i < tamañoPool; i++)
+        {
+            AgregarObstaculoAlPool();
+        }
+    }
+
+    private GameObject AgregarObstaculoAlPool()
+    {
+            GameObject obstaculo = Instantiate(prefabObstaculo, Vector3.zero, prefabObstaculo.transform.rotation);
+            obstaculo.SetActive(false);
+            obstaculo.transform.SetParent(contenedorObstaculos.transform);
+            poolObstaculos.Add(obstaculo);
+
+            Debug.Log("Obstaculo creado.");
+
+            return obstaculo;
+    }
+
+    private GameObject ObtenerObstaculoDesactivado()
+    {
+        foreach(GameObject obstaculo in poolObstaculos)
+        {
+            if(!obstaculo.activeSelf)
+            {
+                return obstaculo;
+            }
+        }
+
+        return null;
+    }
+
+    private GameObject PosicionarObstaculo(GameObject obstaculo, Vector3 posicion, Quaternion rotacion)
+    {
+        obstaculo.transform.position = posicion;
+        obstaculo.transform.rotation = rotacion;
+        obstaculo.SetActive(true);
+        return obstaculo;
+    }
 
     public void SpawnearObstaculo(GameObject pista, GameObject siguientePista)
     {
         BehaviourPista scriptPista = pista.GetComponentInChildren<BehaviourPista>();
         BehaviourPista scriptSiguientePista = siguientePista.GetComponentInChildren<BehaviourPista>();
+
+        List<GameObject> obstaculosAsociados = new List<GameObject>();
 
         List<Transform> carrilesAConsiderar;
         List<int> lugaresConsiderados = new List<int>();
@@ -28,7 +78,7 @@ public class ObstaculoManager : MonoBehaviour
         Transform carrilSeleccionado;
         float posicionVertical;
 
-        GameObject ultimoObstaculoCreado;
+        GameObject ultimoObstaculoPosicionado;
 
         while((pista.transform.position.z + scriptPista.Longitud / 2) - posicionUltimoObstaculo.z > distancia)
         {
@@ -50,8 +100,8 @@ public class ObstaculoManager : MonoBehaviour
 
             carrilSeleccionado = carrilesAConsiderar[lugaresConsiderados[lugarRandom] / 2];
 
-            Debug.Log(lugarRandom);
-            Debug.Log(lugaresConsiderados[lugarRandom] / 2);
+            //Debug.Log(lugarRandom);
+            //Debug.Log(lugaresConsiderados[lugarRandom] / 2);
 
             if(lugaresConsiderados[lugarRandom] % 2 == 1)
             {
@@ -62,7 +112,16 @@ public class ObstaculoManager : MonoBehaviour
                 posicionVertical = alturaPrimerPiso;
             } 
 
-            ultimoObstaculoCreado = Instantiate(prefabObstaculo, new Vector3(carrilSeleccionado.position.x, posicionVertical, posicionUltimoObstaculo.z + distancia), prefabObstaculo.transform.rotation);
+            ultimoObstaculoPosicionado = ObtenerObstaculoDesactivado();
+
+            if(ultimoObstaculoPosicionado == null)
+            {
+                ultimoObstaculoPosicionado = AgregarObstaculoAlPool();
+            }
+            
+            obstaculosAsociados.Add(ultimoObstaculoPosicionado);
+
+            PosicionarObstaculo(ultimoObstaculoPosicionado, new Vector3(carrilSeleccionado.position.x, posicionVertical, posicionUltimoObstaculo.z + distancia), prefabObstaculo.transform.rotation);
 
             lugaresConsiderados.RemoveAt(lugarRandom);
 
@@ -85,13 +144,24 @@ public class ObstaculoManager : MonoBehaviour
                         posicionVertical = alturaPrimerPiso;
                     } 
 
-                    ultimoObstaculoCreado = Instantiate(prefabObstaculo, new Vector3(carrilSeleccionado.position.x, posicionVertical, posicionUltimoObstaculo.z + distancia), prefabObstaculo.transform.rotation);
+                    ultimoObstaculoPosicionado = ObtenerObstaculoDesactivado();
+
+                    if(ultimoObstaculoPosicionado == null)
+                    {
+                        ultimoObstaculoPosicionado = AgregarObstaculoAlPool();
+                    }
+                    
+                    obstaculosAsociados.Add(ultimoObstaculoPosicionado);
+
+                    PosicionarObstaculo(ultimoObstaculoPosicionado, new Vector3(carrilSeleccionado.position.x, posicionVertical, posicionUltimoObstaculo.z + distancia), prefabObstaculo.transform.rotation);
                 }
 
                 lugaresConsiderados.RemoveAt(lugarRandom);
             }
 
-            posicionUltimoObstaculo =  ultimoObstaculoCreado.transform.position;
+            posicionUltimoObstaculo =  ultimoObstaculoPosicionado.transform.position;
+
+            scriptPista.obstaculosAsociados = obstaculosAsociados;
         }
     }
 }

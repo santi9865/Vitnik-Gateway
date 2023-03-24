@@ -21,6 +21,7 @@ public class PistaManager : MonoBehaviour
         Vector3 posicionUltimaPista = pistas[pistas.Count - 1].transform.position;
 
         pistaRemovida.SetActive(false);
+        pistaRemovida.GetComponentInChildren<BehaviourPista>().DesactivarObstaculosAsociados();
         pistas.RemoveAt(0);
 
         pistaRemovida.transform.position = posicionUltimaPista + offset;

@@ -7,6 +7,8 @@ public class BehaviourPista : MonoBehaviour
     [SerializeField] private PistaManager pistaManager;
     [SerializeField] private float longitud;
 
+    public List<GameObject> obstaculosAsociados;
+
     public float Longitud {get => longitud;}
 
     // Start is called before the first frame update
@@ -19,6 +21,17 @@ public class BehaviourPista : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void DesactivarObstaculosAsociados()
+    {
+        if(obstaculosAsociados != null)
+        {
+            foreach(GameObject obstaculos in obstaculosAsociados)
+            {
+                obstaculos.SetActive(false);
+            }
+        }
     }
 
     private void OnTriggerEnter(Collider other)
