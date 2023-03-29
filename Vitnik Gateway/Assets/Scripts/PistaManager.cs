@@ -30,6 +30,6 @@ public class PistaManager : MonoBehaviour
 
         pistaRemovida.SetActive(true);
 
-        obstaculoManager.SpawnearObstaculo(pistas[pistas.Count - 1], pistas[0]);
+        obstaculoManager.SpawnearObstaculos(pistas[pistas.Count - 1], pistas[0]);
     }
 }

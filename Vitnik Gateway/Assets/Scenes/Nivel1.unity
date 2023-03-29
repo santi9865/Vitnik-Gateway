@@ -887,7 +887,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pistaManager: {fileID: 2108169941}
   longitud: 12.19
-  obstaculosAsociados: []
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1082,13 +1081,43 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pistaManager: {fileID: 2108169941}
   longitud: 12.19
-  obstaculosAsociados: []
 --- !u!4 &801149822 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4680078884367443740, guid: 5d388707284dbf046a57b39c625d4a8e,
     type: 3}
   m_PrefabInstance: {fileID: 5162236555271794631}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &818293253
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 818293254}
+  m_Layer: 0
+  m_Name: Monedas
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &818293254
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 818293253}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -28.013039, y: -10.722392, z: 89.08807}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &827455417
 GameObject:
   m_ObjectHideFlags: 0
@@ -1464,7 +1493,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pistaManager: {fileID: 2108169941}
   longitud: 12.19
-  obstaculosAsociados: []
 --- !u!1001 &1056465386
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2148,7 +2176,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pistaManager: {fileID: 2108169941}
   longitud: 12.19
-  obstaculosAsociados: []
 --- !u!1 &1709144119
 GameObject:
   m_ObjectHideFlags: 0
@@ -2247,7 +2274,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pistaManager: {fileID: 2108169941}
   longitud: 12.19
-  obstaculosAsociados: []
 --- !u!4 &1825946763 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ab2dd89792279164d9b81a2b84adc77b,
@@ -2274,7 +2300,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pistaManager: {fileID: 2108169941}
   longitud: 12.19
-  obstaculosAsociados: []
 --- !u!1 &1850784917 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5432074637288988016, guid: 5d388707284dbf046a57b39c625d4a8e,
@@ -2434,7 +2459,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pistaManager: {fileID: 2108169941}
   longitud: 12.19
-  obstaculosAsociados: []
 --- !u!1001 &2052222946
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2662,9 +2686,11 @@ MonoBehaviour:
   alturaPrimerPiso: 0
   alturaSegundoPiso: 0.95
   distancia: 12
+  margen: 3
+  unidad: 1
   distanciaSiguientePista: 3
   probabilidadSpawnMultiple: 0.3
-  posicionUltimoObstaculo: {x: 0, y: 0, z: 67}
+  posicionUltimoGrupo: 63
   prefabObstaculo: {fileID: 3558656423110874392, guid: a61f40b8354243945a81c2b1e6584798,
     type: 3}
   "tama\xF1oPool": 20
@@ -2689,7 +2715,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pistaManager: {fileID: 2108169941}
   longitud: 12.19
-  obstaculosAsociados: []
 --- !u!4 &543450653389121549 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4623309740610717642, guid: 5d388707284dbf046a57b39c625d4a8e,

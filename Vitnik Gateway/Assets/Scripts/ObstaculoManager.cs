@@ -7,10 +7,12 @@ public class ObstaculoManager : MonoBehaviour
     [SerializeField] private float alturaPrimerPiso;
     [SerializeField] private float alturaSegundoPiso;
     [SerializeField] private float distancia;
+    [SerializeField] private float margen;
+    [SerializeField] private float unidad;
     [SerializeField] private float distanciaSiguientePista;
 
     [SerializeField] private float probabilidadSpawnMultiple;
-    [SerializeField] private Vector3 posicionUltimoObstaculo;
+    [SerializeField] private float posicionUltimoGrupo;
 
     [SerializeField] private GameObject prefabObstaculo;
     [SerializeField] private int tamañoPool;
@@ -25,20 +27,22 @@ public class ObstaculoManager : MonoBehaviour
 
         for(int i = 0; i < tamañoPool; i++)
         {
-            AgregarObstaculoAlPool();
+            AgregarObstaculoAlPool("caja " + i);            
         }
     }
 
-    private GameObject AgregarObstaculoAlPool()
+    private GameObject AgregarObstaculoAlPool(string nombre)
     {
-            GameObject obstaculo = Instantiate(prefabObstaculo, Vector3.zero, prefabObstaculo.transform.rotation);
-            obstaculo.SetActive(false);
-            obstaculo.transform.SetParent(contenedorObstaculos.transform);
-            poolObstaculos.Add(obstaculo);
+        GameObject obstaculo = Instantiate(prefabObstaculo, Vector3.zero, prefabObstaculo.transform.rotation);
+        obstaculo.SetActive(false);
+        obstaculo.transform.SetParent(contenedorObstaculos.transform);
+        poolObstaculos.Add(obstaculo);
 
-            Debug.Log("Obstaculo creado.");
+        obstaculo.name = nombre;
 
-            return obstaculo;
+        //Debug.Log("Obstaculo creado.");
+
+        return obstaculo;
     }
 
     private GameObject ObtenerObstaculoDesactivado()
@@ -62,106 +66,116 @@ public class ObstaculoManager : MonoBehaviour
         return obstaculo;
     }
 
-    public void SpawnearObstaculo(GameObject pista, GameObject siguientePista)
+    private float DevolverEnUnidad(float valor)
+    {
+        return valor - (valor % unidad);
+    }
+
+    public void SpawnearObstaculos(GameObject pista, GameObject siguientePista)
     {
         BehaviourPista scriptPista = pista.GetComponentInChildren<BehaviourPista>();
         BehaviourPista scriptSiguientePista = siguientePista.GetComponentInChildren<BehaviourPista>();
 
-        List<GameObject> obstaculosAsociados = new List<GameObject>();
-
-        List<Transform> carrilesAConsiderar;
-        List<int> lugaresConsiderados = new List<int>();
-        int lugarRandom;
+        List<GrupoObstaculos> gruposObstaculos = new List<GrupoObstaculos>();
 
         float numeroRandom;
 
-        Transform carrilSeleccionado;
-        float posicionVertical;
+        float margenAleatorio = DevolverEnUnidad(Random.Range(0,margen));
 
-        GameObject ultimoObstaculoPosicionado;
-
-        while((pista.transform.position.z + scriptPista.Longitud / 2) - posicionUltimoObstaculo.z > distancia)
+        while((pista.transform.position.z + scriptPista.Longitud / 2) - posicionUltimoGrupo > distancia + margenAleatorio)
         {
-            if(posicionUltimoObstaculo.z + distancia < siguientePista.transform.position.z - scriptSiguientePista.Longitud / 2 - distanciaSiguientePista)
+
+            GrupoObstaculos nuevoGrupo = new GrupoObstaculos(posicionUltimoGrupo + distancia + margenAleatorio, new List<LugarObstaculo>(), new List<Transform>());
+
+            if(posicionUltimoGrupo + distancia < siguientePista.transform.position.z - scriptSiguientePista.Longitud / 2 - distanciaSiguientePista)
             {
-                carrilesAConsiderar = siguientePista.GetComponentInChildren<BehaviourListaCarriles>().Carriles;
+                nuevoGrupo.Carriles = siguientePista.GetComponentInChildren<BehaviourListaCarriles>().Carriles;
             }
             else
             {
-                carrilesAConsiderar = pista.GetComponentInChildren<BehaviourListaCarriles>().Carriles;
+                nuevoGrupo.Carriles = pista.GetComponentInChildren<BehaviourListaCarriles>().Carriles;
             }
 
-            for(int i = 0; i < carrilesAConsiderar.Count * 2; i++)
+            for(int i = 0; i < nuevoGrupo.Carriles.Count * 2; i++)
             {
-                lugaresConsiderados.Add(i);
+                LugarObstaculo nuevoLugar = new LugarObstaculo();
+
+                nuevoLugar.Carril = i / 2;
+
+                if( i % 2 == 1)
+                {
+                    nuevoLugar.Altura = Altura.Arriba;
+                }
+                else
+                {
+                    nuevoLugar.Altura = Altura.Abajo;
+                }
+
+                nuevoGrupo.Lugares.Add(nuevoLugar);
             }
 
-            lugarRandom = Random.Range(0, lugaresConsiderados.Count);
+            LugarObstaculo lugarLibreAleatorio = nuevoGrupo.DevolverLugarLibreAleatorio();
 
-            carrilSeleccionado = carrilesAConsiderar[lugaresConsiderados[lugarRandom] / 2];
-
-            //Debug.Log(lugarRandom);
-            //Debug.Log(lugaresConsiderados[lugarRandom] / 2);
-
-            if(lugaresConsiderados[lugarRandom] % 2 == 1)
+            if(ObtenerObstaculoDesactivado() == null)
             {
-                posicionVertical = alturaSegundoPiso;
+                lugarLibreAleatorio.Obstaculo = AgregarObstaculoAlPool("");
             }
             else
             {
-                posicionVertical = alturaPrimerPiso;
-            } 
-
-            ultimoObstaculoPosicionado = ObtenerObstaculoDesactivado();
-
-            if(ultimoObstaculoPosicionado == null)
-            {
-                ultimoObstaculoPosicionado = AgregarObstaculoAlPool();
+                lugarLibreAleatorio.Obstaculo = ObtenerObstaculoDesactivado();
             }
+
+            lugarLibreAleatorio.Obstaculo.SetActive(true);
             
-            obstaculosAsociados.Add(ultimoObstaculoPosicionado);
-
-            PosicionarObstaculo(ultimoObstaculoPosicionado, new Vector3(carrilSeleccionado.position.x, posicionVertical, posicionUltimoObstaculo.z + distancia), prefabObstaculo.transform.rotation);
-
-            lugaresConsiderados.RemoveAt(lugarRandom);
-
-            for(int i = 0; i < lugaresConsiderados.Count - 1; i++)
+            for(int i = 0; i < nuevoGrupo.Lugares.Count - 1; i++)
             {
-                lugarRandom = Random.Range(0, lugaresConsiderados.Count);
-
                 numeroRandom = Random.Range(0f,1f);
 
                 if(numeroRandom < probabilidadSpawnMultiple)
                 {
-                    carrilSeleccionado = carrilesAConsiderar[lugaresConsiderados[lugarRandom] / 2];
+                    lugarLibreAleatorio = nuevoGrupo.DevolverLugarLibreAleatorio();
 
-                    if(lugaresConsiderados[lugarRandom] % 2 == 1)
+                    if(ObtenerObstaculoDesactivado() == null)
+                    {
+                        lugarLibreAleatorio.Obstaculo = AgregarObstaculoAlPool("");
+                    }
+                    else
+                    {
+                        lugarLibreAleatorio.Obstaculo = ObtenerObstaculoDesactivado();
+                    }
+
+                    lugarLibreAleatorio.Obstaculo.SetActive(true);
+                }
+            }
+
+            foreach(LugarObstaculo lugar in nuevoGrupo.Lugares)
+            {
+                if(!lugar.Libre)
+                {
+                    float posicionVertical;
+
+                    if(lugar.Altura == Altura.Arriba)
                     {
                         posicionVertical = alturaSegundoPiso;
                     }
                     else
                     {
                         posicionVertical = alturaPrimerPiso;
-                    } 
-
-                    ultimoObstaculoPosicionado = ObtenerObstaculoDesactivado();
-
-                    if(ultimoObstaculoPosicionado == null)
-                    {
-                        ultimoObstaculoPosicionado = AgregarObstaculoAlPool();
                     }
-                    
-                    obstaculosAsociados.Add(ultimoObstaculoPosicionado);
 
-                    PosicionarObstaculo(ultimoObstaculoPosicionado, new Vector3(carrilSeleccionado.position.x, posicionVertical, posicionUltimoObstaculo.z + distancia), prefabObstaculo.transform.rotation);
+                    PosicionarObstaculo(lugar.Obstaculo, new Vector3(nuevoGrupo.Carriles[lugar.Carril].position.x, posicionVertical, nuevoGrupo.Posicion) , prefabObstaculo.transform.rotation );
                 }
-
-                lugaresConsiderados.RemoveAt(lugarRandom);
             }
 
-            posicionUltimoObstaculo =  ultimoObstaculoPosicionado.transform.position;
+            posicionUltimoGrupo = nuevoGrupo.Posicion;
 
-            scriptPista.obstaculosAsociados = obstaculosAsociados;
+            gruposObstaculos.Add(nuevoGrupo);
+
+            margenAleatorio = DevolverEnUnidad(Random.Range(0,margen));
+
+            //Debug.Log(distancia + margenAleatorio);
         }
+
+        scriptPista.gruposObstaculos = gruposObstaculos;
     }
 }

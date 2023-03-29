@@ -7,7 +7,7 @@ public class BehaviourPista : MonoBehaviour
     [SerializeField] private PistaManager pistaManager;
     [SerializeField] private float longitud;
 
-    public List<GameObject> obstaculosAsociados;
+    public List<GrupoObstaculos> gruposObstaculos;
 
     public float Longitud {get => longitud;}
 
@@ -25,11 +25,11 @@ public class BehaviourPista : MonoBehaviour
 
     public void DesactivarObstaculosAsociados()
     {
-        if(obstaculosAsociados != null)
+        if(gruposObstaculos != null)
         {
-            foreach(GameObject obstaculos in obstaculosAsociados)
+            foreach(GrupoObstaculos grupo in gruposObstaculos)
             {
-                obstaculos.SetActive(false);
+                grupo.DesactivarObstaculos();
             }
         }
     }
