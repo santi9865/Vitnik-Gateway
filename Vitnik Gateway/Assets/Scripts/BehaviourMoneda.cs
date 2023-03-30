@@ -18,6 +18,6 @@ public class BehaviourMoneda : MonoBehaviour
 
     public void Destruir()
     {
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 }

@@ -7,9 +7,11 @@ public class ObstaculoManager : MonoBehaviour
     [SerializeField] private float alturaPrimerPiso;
     [SerializeField] private float alturaSegundoPiso;
     [SerializeField] private float distancia;
-    [SerializeField] private float margen;
+    [SerializeField] private float varianzaPosicion;
     [SerializeField] private float unidad;
-    [SerializeField] private float distanciaSiguientePista;
+    [SerializeField] private float distanciaPistaSiguiente;
+    [SerializeField] private float distanciaPistaAnterior;
+    [SerializeField] private float margenDeManiobra;
 
     [SerializeField] private float probabilidadSpawnMultiple;
     [SerializeField] private float posicionUltimoGrupo;
@@ -17,6 +19,8 @@ public class ObstaculoManager : MonoBehaviour
     [SerializeField] private GameObject prefabObstaculo;
     [SerializeField] private int tamañoPool;
     [SerializeField] private GameObject contenedorObstaculos;
+
+    [SerializeField] private BehaviourMovimientoJugador scriptJugador;
 
     private List<GameObject> poolObstaculos;
 
@@ -71,25 +75,46 @@ public class ObstaculoManager : MonoBehaviour
         return valor - (valor % unidad);
     }
 
-    public void SpawnearObstaculos(GameObject pista, GameObject siguientePista)
+    private void VerificarDistancias()
     {
+        float distanciaMaxima = Mathf.Max(scriptJugador.DistanciaDesliz, scriptJugador.DistanciaSalto);
+
+        distanciaPistaAnterior = Mathf.Max(distanciaMaxima + margenDeManiobra, distanciaPistaAnterior);
+
+        distanciaPistaSiguiente = Mathf.Max(distanciaMaxima + margenDeManiobra, distanciaPistaAnterior);
+
+        if(distancia - varianzaPosicion < distanciaPistaAnterior || distancia - varianzaPosicion < distanciaPistaSiguiente)
+        {
+            distancia = Mathf.Max(distanciaPistaAnterior, distanciaPistaSiguiente) + varianzaPosicion;
+        }
+    }
+
+    public void SpawnearObstaculos(GameObject pistaAnterior, GameObject pista, GameObject pistaSiguiente)
+    {
+        VerificarDistancias();
+
+        BehaviourPista scriptPistaAnterior = pistaAnterior.GetComponentInChildren<BehaviourPista>();
         BehaviourPista scriptPista = pista.GetComponentInChildren<BehaviourPista>();
-        BehaviourPista scriptSiguientePista = siguientePista.GetComponentInChildren<BehaviourPista>();
+        BehaviourPista scriptSiguientePista = pistaSiguiente.GetComponentInChildren<BehaviourPista>();
 
         List<GrupoObstaculos> gruposObstaculos = new List<GrupoObstaculos>();
 
         float numeroRandom;
 
-        float margenAleatorio = DevolverEnUnidad(Random.Range(0,margen));
+        float margenAleatorio = DevolverEnUnidad(Random.Range(-varianzaPosicion, varianzaPosicion));
 
         while((pista.transform.position.z + scriptPista.Longitud / 2) - posicionUltimoGrupo > distancia + margenAleatorio)
         {
 
-            GrupoObstaculos nuevoGrupo = new GrupoObstaculos(posicionUltimoGrupo + distancia + margenAleatorio, new List<LugarObstaculo>(), new List<Transform>());
+            GrupoObstaculos nuevoGrupo = new GrupoObstaculos(posicionUltimoGrupo + distancia + margenAleatorio, new List<LugarObstaculo>(), new List<GameObject>());
 
-            if(posicionUltimoGrupo + distancia < siguientePista.transform.position.z - scriptSiguientePista.Longitud / 2 - distanciaSiguientePista)
+            if(posicionUltimoGrupo + distancia + margenAleatorio > pistaSiguiente.transform.position.z - scriptSiguientePista.Longitud / 2 - distanciaPistaSiguiente)
             {
-                nuevoGrupo.Carriles = siguientePista.GetComponentInChildren<BehaviourListaCarriles>().Carriles;
+                nuevoGrupo.Carriles = pistaSiguiente.GetComponentInChildren<BehaviourListaCarriles>().Carriles;
+            }
+            else if(posicionUltimoGrupo + distancia + margenAleatorio < pistaAnterior.transform.position.z + scriptPistaAnterior.Longitud / 2 + distanciaPistaAnterior)
+            {
+                nuevoGrupo.Carriles = pistaAnterior.GetComponentInChildren<BehaviourListaCarriles>().Carriles;
             }
             else
             {
@@ -163,7 +188,7 @@ public class ObstaculoManager : MonoBehaviour
                         posicionVertical = alturaPrimerPiso;
                     }
 
-                    PosicionarObstaculo(lugar.Obstaculo, new Vector3(nuevoGrupo.Carriles[lugar.Carril].position.x, posicionVertical, nuevoGrupo.Posicion) , prefabObstaculo.transform.rotation );
+                    PosicionarObstaculo(lugar.Obstaculo, new Vector3(nuevoGrupo.Carriles[lugar.Carril].transform.position.x, posicionVertical, nuevoGrupo.Posicion) , prefabObstaculo.transform.rotation );
                 }
             }
 
@@ -171,7 +196,7 @@ public class ObstaculoManager : MonoBehaviour
 
             gruposObstaculos.Add(nuevoGrupo);
 
-            margenAleatorio = DevolverEnUnidad(Random.Range(0,margen));
+            margenAleatorio = DevolverEnUnidad(Random.Range(-varianzaPosicion,varianzaPosicion));
 
             //Debug.Log(distancia + margenAleatorio);
         }

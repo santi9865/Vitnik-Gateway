@@ -8,19 +8,24 @@ public class BehaviourPista : MonoBehaviour
     [SerializeField] private float longitud;
 
     public List<GrupoObstaculos> gruposObstaculos;
+    public List<GameObject> monedas;
 
     public float Longitud {get => longitud;}
 
-    // Start is called before the first frame update
-    void Start()
+    public void OrdenarGruposObstaculos()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        for( int i = 0; i < gruposObstaculos.Count; i++)
+        {
+            for(int j = i; j < gruposObstaculos.Count; j++)
+            {
+                if(gruposObstaculos[i].Posicion > gruposObstaculos[j].Posicion)
+                {
+                    GrupoObstaculos memoria = gruposObstaculos[i];
+                    gruposObstaculos[i] = gruposObstaculos[j];
+                    gruposObstaculos[j] = memoria;
+                }
+            }
+        }
     }
 
     public void DesactivarObstaculosAsociados()
@@ -30,6 +35,17 @@ public class BehaviourPista : MonoBehaviour
             foreach(GrupoObstaculos grupo in gruposObstaculos)
             {
                 grupo.DesactivarObstaculos();
+            }
+        }
+    }
+
+    public void DesactivarMonedasAsociadas()
+    {
+        if(monedas != null)
+        {
+            foreach(GameObject moneda in monedas)
+            {
+                moneda.SetActive(false);
             }
         }
     }

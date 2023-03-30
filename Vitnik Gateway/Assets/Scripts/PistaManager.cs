@@ -8,11 +8,13 @@ public class PistaManager : MonoBehaviour
     [SerializeField] private Vector3 offset;
 
     private ObstaculoManager obstaculoManager;
+    private MonedaManager monedaManager;
 
     // Start is called before the first frame update
     void Start()
     {
         obstaculoManager = GetComponent<ObstaculoManager>();
+        monedaManager = GetComponent<MonedaManager>();
     }
 
     public void CircularPistas()
@@ -22,6 +24,7 @@ public class PistaManager : MonoBehaviour
 
         pistaRemovida.SetActive(false);
         pistaRemovida.GetComponentInChildren<BehaviourPista>().DesactivarObstaculosAsociados();
+        pistaRemovida.GetComponentInChildren<BehaviourPista>().DesactivarMonedasAsociadas();
         pistas.RemoveAt(0);
 
         pistaRemovida.transform.position = posicionUltimaPista + offset;
@@ -30,6 +33,7 @@ public class PistaManager : MonoBehaviour
 
         pistaRemovida.SetActive(true);
 
-        obstaculoManager.SpawnearObstaculos(pistas[pistas.Count - 1], pistas[0]);
+        obstaculoManager.SpawnearObstaculos(pistas[pistas.Count - 2], pistas[pistas.Count - 1], pistas[0]);
+        monedaManager.SpawnearMonedas(pistas[pistas.Count - 1]);
     }
 }

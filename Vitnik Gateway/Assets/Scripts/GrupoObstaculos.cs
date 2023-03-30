@@ -6,9 +6,9 @@ public class GrupoObstaculos
 {
     public List<LugarObstaculo> Lugares;
     public float Posicion {get;}
-    public List<Transform> Carriles;
+    public List<GameObject> Carriles;
 
-    public GrupoObstaculos(float posicion, List<LugarObstaculo> lugares, List<Transform> carriles)
+    public GrupoObstaculos(float posicion, List<LugarObstaculo> lugares, List<GameObject> carriles)
     {
         Posicion = posicion;
         Lugares = lugares;
@@ -25,11 +25,13 @@ public class GrupoObstaculos
 
     public LugarObstaculo DevolverLugarLibreAleatorio()
     {        
-
         int contadorLugaresLibres = 0;
+        
         foreach(LugarObstaculo lugar in Lugares)
         {
-            if(lugar.Libre)
+            Carril scriptCarril = Carriles[lugar.Carril].GetComponent<Carril>();
+
+            if(scriptCarril.Habilitado && lugar.Libre)
             {
                 contadorLugaresLibres++;
             }
@@ -41,7 +43,9 @@ public class GrupoObstaculos
 
         foreach(LugarObstaculo lugar in Lugares)
         {
-            if(lugar.Libre)
+            Carril scriptCarril = Carriles[lugar.Carril].GetComponent<Carril>();
+
+            if(scriptCarril.Habilitado && lugar.Libre)
             {
                 lugaresLibres[contadorArray] = lugar;
                 contadorArray++;

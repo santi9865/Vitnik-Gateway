@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class BehaviourListaCarriles : MonoBehaviour
 {
-    [SerializeField] private List<Transform> carriles;
+    [SerializeField] private List<GameObject> carriles;
 
-    public List<Transform> Carriles 
+    public List<GameObject> Carriles 
     {
         get
         {

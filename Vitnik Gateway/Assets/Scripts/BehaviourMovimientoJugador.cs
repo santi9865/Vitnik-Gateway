@@ -6,10 +6,16 @@ public class BehaviourMovimientoJugador : MonoBehaviour
 {
     [SerializeField] private float velocidad;
     [SerializeField] private float distanciaMaximaSalto;
+    public float DistanciaSalto {get => distanciaMaximaSalto;}
     [SerializeField] private float distanciaMaximaDesliz;
+    public float DistanciaDesliz {get => distanciaMaximaSalto;}
     [SerializeField] private float alturaBase;
+    public float AlturaBase {get => alturaBase;}
+    [SerializeField] private float alturaMaxima = 0;
+    public float AlturaMaxima {get => alturaMaxima;}  
     [SerializeField] private bool vivo = true;
-    [SerializeField] private List<Transform> carriles;
+
+    [SerializeField] private List<GameObject> carriles;
     [SerializeField] private int carrilActual = 1;
     [SerializeField] private BehaviourMiniPantallas scriptMiniPantallas;
 
@@ -36,12 +42,6 @@ public class BehaviourMovimientoJugador : MonoBehaviour
     private BehaviourPlayerCollisionDetector detectorColisiones;
 
     [SerializeField] private Animator animatorJugador;
-
-    //Debug Variables
-
-    [SerializeField] private float alturaMaxima = 0;
-
-    //End of debug variables
 
     void Start()
     {
@@ -192,8 +192,8 @@ public class BehaviourMovimientoJugador : MonoBehaviour
     {
         if (carrilActual < carriles.Count - 1)
         {
-            carrilInicial = carriles[carrilActual].position;
-            carrilFinal = carriles[carrilActual + 1].position;
+            carrilInicial = carriles[carrilActual].transform.position;
+            carrilFinal = carriles[carrilActual + 1].transform.position;
 
             carrilActual++;
 
@@ -208,8 +208,8 @@ public class BehaviourMovimientoJugador : MonoBehaviour
     {
         if (carrilActual > 0)
         {
-            carrilInicial = carriles[carrilActual].position;
-            carrilFinal = carriles[carrilActual - 1].position;
+            carrilInicial = carriles[carrilActual].transform.position;
+            carrilFinal = carriles[carrilActual - 1].transform.position;
 
             carrilActual--;
 

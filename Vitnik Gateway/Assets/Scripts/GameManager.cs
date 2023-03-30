@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        Instancia = this;
         // if(Instancia == null)
         // {
         //     Instancia = this;
