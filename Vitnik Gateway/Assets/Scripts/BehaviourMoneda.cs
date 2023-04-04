@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BehaviourMoneda : MonoBehaviour
 {
+    public BehaviourPista pistaAsociada;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,6 +19,7 @@ public class BehaviourMoneda : MonoBehaviour
 
     public void Destruir()
     {
+        pistaAsociada.RemoverMoneda(gameObject);
         gameObject.SetActive(false);
     }
 }

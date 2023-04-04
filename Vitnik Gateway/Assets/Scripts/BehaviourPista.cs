@@ -47,6 +47,7 @@ public class BehaviourPista : MonoBehaviour
             {
                 moneda.SetActive(false);
             }
+            Debug.Log("Monedas borradas.");
         }
     }
 
@@ -57,4 +58,12 @@ public class BehaviourPista : MonoBehaviour
             pistaManager.CircularPistas();
         }
     }
+
+    public void RemoverMoneda(GameObject moneda)
+    {
+        if(monedas.Contains(moneda))
+        {
+            monedas.Remove(moneda);
+        }
+    } 
 }

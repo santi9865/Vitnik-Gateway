@@ -54,5 +54,4 @@ public class GrupoObstaculos
 
         return lugaresLibres[Random.Range(0, lugaresLibres.Length)];
     }
-
 }

@@ -37,7 +37,8 @@ public class BehaviourMovimientoJugador : MonoBehaviour
     private bool saltando;
     private float timerSalto;
     private float tiempoMaximoSalto;
-    
+
+    private float posicionAnterior;  
 
     private BehaviourPlayerCollisionDetector detectorColisiones;
 
@@ -48,6 +49,8 @@ public class BehaviourMovimientoJugador : MonoBehaviour
         detectorColisiones = gameObject.GetComponentInChildren<BehaviourPlayerCollisionDetector>();
 
         animatorJugador = gameObject.GetComponentInChildren<Animator>();
+
+        posicionAnterior = gameObject.transform.position.z;
     }
 
     // Update is called once per frame
@@ -55,8 +58,6 @@ public class BehaviourMovimientoJugador : MonoBehaviour
     {
         if(vivo)
         {
-            MoverseHaciaAdelante();
-
             if(Input.GetKeyDown(KeyCode.Space))
             {
                 if(!saltando && !cambiandoCarril)
@@ -90,6 +91,8 @@ public class BehaviourMovimientoJugador : MonoBehaviour
 
     void FixedUpdate()
     {
+            MoverseHaciaAdelante();
+
             if(deslizando)
             {
                 ContarTimerDesliz();
@@ -255,7 +258,11 @@ public class BehaviourMovimientoJugador : MonoBehaviour
     private void MoverseHaciaAdelante()
     {
         gameObject.transform.Translate(Vector3.forward * velocidad * Time.deltaTime);
+
+        GameManager.Instancia.AddDistancia(gameObject.transform.position.z - posicionAnterior);
+        posicionAnterior = gameObject.transform.position.z;
     }
+
     //Este m�todo es llamado por el script del detector de colisiones del jugador
     public void ColisionObstaculo(ObstacleType tipoObstaculo)
     {

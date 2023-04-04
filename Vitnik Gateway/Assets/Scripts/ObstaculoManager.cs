@@ -81,7 +81,7 @@ public class ObstaculoManager : MonoBehaviour
 
         distanciaPistaAnterior = Mathf.Max(distanciaMaxima + margenDeManiobra, distanciaPistaAnterior);
 
-        distanciaPistaSiguiente = Mathf.Max(distanciaMaxima + margenDeManiobra, distanciaPistaAnterior);
+        distanciaPistaSiguiente = Mathf.Max(distanciaMaxima + margenDeManiobra, distanciaPistaSiguiente);
 
         if(distancia - varianzaPosicion < distanciaPistaAnterior || distancia - varianzaPosicion < distanciaPistaSiguiente)
         {

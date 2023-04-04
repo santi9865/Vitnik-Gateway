@@ -149,6 +149,18 @@ public class MonedaManager : MonoBehaviour
         }
     }
 
+    private bool EstaLibreArriba(GrupoObstaculos grupo, int carril)
+    {
+        foreach(LugarObstaculo lugar in grupo.Lugares)
+        {
+            if(lugar.Carril == carril && lugar.Altura == Altura.Arriba)
+            {
+                return lugar.Libre;
+            }
+        }
+
+        return false;
+    }
 
     public void SpawnearMonedas(GameObject pista)
     {
@@ -209,8 +221,16 @@ public class MonedaManager : MonoBehaviour
                 }
                 else
                 {
+                    if(EstaLibreArriba(grupos[grupoActual], lugarActual.Carril))
+                    {
+                        altura = scriptJugador.AlturaBase;
+
+                    }
+                    else
+                    {
+                        altura = alturaDesliz;
+                    }
                     //Debug.Log("abajo");
-                    altura = alturaDesliz;
                 }
 
                 ultimaMonedaSpawneada = PosicionarMoneda(nuevaMoneda, new Vector3(grupos[grupoActual].Carriles[lugarActual.Carril].transform.position.x, altura, ultimaMonedaSpawneada.transform.position.z + espaciado), prefabMoneda.transform.rotation);
@@ -222,6 +242,7 @@ public class MonedaManager : MonoBehaviour
             }
 
             scriptPista.monedas.Add(ultimaMonedaSpawneada);
+            ultimaMonedaSpawneada.GetComponent<BehaviourMoneda>().pistaAsociada = scriptPista;
         }
     }
 }

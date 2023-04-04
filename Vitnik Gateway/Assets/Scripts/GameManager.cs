@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instancia {get; private set;}
     public int Monedas { get; private set;} = 0;
+    public float Distancia {get; private set;} = 0;
 
     [SerializeField] private HUDManager hudManager;
 
@@ -47,5 +48,15 @@ public class GameManager : MonoBehaviour
         }
 
         hudManager.ActualizarMonedas();
+    }
+
+    public void AddDistancia(float desplazamiento)
+    {
+        if(desplazamiento > 0)
+        {
+            Distancia += desplazamiento;
+        }
+
+        hudManager.ActualizarDistancia();
     }
 }
