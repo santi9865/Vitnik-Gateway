@@ -47,7 +47,7 @@ public class BehaviourPista : MonoBehaviour
             {
                 moneda.SetActive(false);
             }
-            Debug.Log("Monedas borradas.");
+            //Debug.Log("Monedas borradas.");
         }
     }
 

@@ -5,6 +5,7 @@ using UnityEngine;
 public class BehaviourMiniPantallas : MonoBehaviour
 {
     [SerializeField] private GameObject pantallaGameOver;
+    [SerializeField] private GameObject pantallaPausa;
     [SerializeField] private GameManager gameManager;
 
 
@@ -24,9 +25,26 @@ public class BehaviourMiniPantallas : MonoBehaviour
     {
         pantallaGameOver.SetActive(nuevoEstado);
 
+        pantallaGameOver.GetComponent<BehaviourMiniPantallaGameOver>().Actualizar();
+
         if(nuevoEstado) 
         {
             gameManager.PauseGame();
         }
+    }
+
+    public void PantallaPausaSetActive(bool nuevoEstado)
+    {
+        pantallaPausa.SetActive(nuevoEstado);
+
+        if(nuevoEstado)
+        {
+            gameManager.PauseGame();
+        }
+    }
+
+    public void IrAMenuPrincipal()
+    {
+        BehaviourSceneManager.IrAEscena(TipoEscena.MENUPRINCIPAL);
     }
 }
