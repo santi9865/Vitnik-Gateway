@@ -43,15 +43,20 @@ public class HUDManager : MonoBehaviour
         {
             EventSystem.current.SetSelectedGameObject(null);
             GameManager.Instancia.UnPauseGame();
-            estadoBtnPausa = false;
+            ActualizarEstadoBtnPausa(false);
             behaviourMiniPantallas.PantallaPausaSetActive(false);
         }
         else
         {
             GameManager.Instancia.PauseGame();
-            estadoBtnPausa = true;
+            ActualizarEstadoBtnPausa(true);
             behaviourMiniPantallas.PantallaPausaSetActive(true);
         }
+    }
+
+    public void ActualizarEstadoBtnPausa(bool nuevoEstado)
+    {
+        estadoBtnPausa = nuevoEstado;
     }
 
 }

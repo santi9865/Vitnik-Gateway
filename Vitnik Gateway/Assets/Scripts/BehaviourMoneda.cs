@@ -19,6 +19,7 @@ public class BehaviourMoneda : MonoBehaviour
 
     public void Destruir()
     {
+        SoundManager.Instancia.ReproducirSonido(Sonido.Moneda);
         pistaAsociada.RemoverMoneda(gameObject);
         gameObject.SetActive(false);
     }

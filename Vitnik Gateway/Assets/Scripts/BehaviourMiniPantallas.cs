@@ -6,7 +6,10 @@ public class BehaviourMiniPantallas : MonoBehaviour
 {
     [SerializeField] private GameObject pantallaGameOver;
     [SerializeField] private GameObject pantallaPausa;
+    [SerializeField] private GameObject pantallaOpciones;
     [SerializeField] private GameManager gameManager;
+
+    private bool pantallaPausaActivaAnterior = false;
 
 
     // Start is called before the first frame update
@@ -40,6 +43,31 @@ public class BehaviourMiniPantallas : MonoBehaviour
         if(nuevoEstado)
         {
             gameManager.PauseGame();
+        }
+    }
+
+    public void PantallaOpcionesSetActive(bool nuevoEstado)
+    {
+        pantallaOpciones.SetActive(nuevoEstado);
+
+        if(pantallaPausa.activeSelf)
+        {
+            pantallaPausaActivaAnterior = pantallaPausa.activeSelf;
+            PantallaPausaSetActive(false);
+        }
+
+        if(nuevoEstado)
+        {
+            pantallaOpciones.GetComponent<BehaviourMiniPantallaOpciones>().Actualizar();
+            gameManager.PauseGame();
+        }
+        else
+        {
+            if(pantallaPausaActivaAnterior)
+            {
+                PantallaPausaSetActive(true);
+                pantallaPausaActivaAnterior = false;
+            }
         }
     }
 
