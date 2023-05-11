@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public float Distancia {get; private set;} = 0;
 
     [SerializeField] private HUDManager hudManager;
+    [SerializeField] private StatsJugador statsJugador;
 
     private void Awake()
     {
@@ -38,6 +39,12 @@ public class GameManager : MonoBehaviour
     public void ResetLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void IntentoTerminado()
+    {
+        statsJugador.AgregarMonedas(Monedas);
+        Monedas = 0;
     }
 
     public void AddMonedas(int cantidad)

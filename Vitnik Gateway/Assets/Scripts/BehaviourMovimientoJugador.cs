@@ -271,6 +271,7 @@ public class BehaviourMovimientoJugador : MonoBehaviour
             case ObstacleType.Solid:
                 vivo = false;
                 scriptMiniPantallas.PantallaGameOverSetActive(true);
+                GameManager.Instancia.IntentoTerminado();
                 break;
             case ObstacleType.Moneda:
                 GameManager.Instancia.AddMonedas(1);

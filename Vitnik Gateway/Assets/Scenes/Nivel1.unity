@@ -4901,6 +4901,8 @@ GameObject:
   - component: {fileID: 1709144124}
   - component: {fileID: 1709144120}
   - component: {fileID: 1709144126}
+  - component: {fileID: 1709144128}
+  - component: {fileID: 1709144127}
   m_Layer: 0
   m_Name: Jugador
   m_TagString: Untagged
@@ -4968,6 +4970,32 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.8773968, y: 0.9280867, z: 1}
   m_Center: {x: 0.021165252, y: 0.008708604, z: 0}
+--- !u!114 &1709144127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1709144119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cea13bc61d904ba4da9ef798f762a896, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nombreDatabase: DatabaseVitnikGateway.db
+  tabla: StatsJugador
+--- !u!114 &1709144128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1709144119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5506da64e5e8184fa26e39e8fd155f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1735517815
 GameObject:
   m_ObjectHideFlags: 0
@@ -6451,6 +6479,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hudManager: {fileID: 225776554}
+  statsJugador: {fileID: 1709144128}
 --- !u!4 &2108169940
 Transform:
   m_ObjectHideFlags: 0
