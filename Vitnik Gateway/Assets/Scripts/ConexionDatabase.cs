@@ -15,13 +15,18 @@ public class ConexionDatabase : MonoBehaviour
 
     void Start()
     {
-        dbURI = "URI=file:" + "Assets/Databases/"+ nombreDatabase;
 
-        conexionDb = new SqliteConnection(dbURI);
     }
 
     private void AbrirConexion()
     {
+        if(conexionDb == null)
+        {
+            dbURI = "URI=file:" + "Assets/Databases/"+ nombreDatabase;
+
+            conexionDb = new SqliteConnection(dbURI);
+        }
+        
         conexionDb.Open();
 
         if(conexionDb.State == ConnectionState.Open)

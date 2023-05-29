@@ -8,47 +8,44 @@ public class IconoTienda : MonoBehaviour
 {
     [SerializeField] private TMP_Text txtMonto;
     [SerializeField] private Image imgIcono;
-    private string descripcion;
-    private int monto;
-    private string nombre;
+    [SerializeField] private GameObject imgAdquirido;
+    [SerializeField] private GameObject imgIncomprable;
 
-    private BehaviourMiniPantallaDescripcionItemTienda scriptMiniPantallaDescripcion;
+    public int Monto {get; private set;}
+    public int ItemID {get; private set;}
+    public bool Comprable {get; private set;}
+    public bool Adquirido {get; private set;}
 
-    // Start is called before the first frame update
-    void Start()
+    private TiendaManager manager;
+
+    public void Actualizar(int nuevoID, int nuevoMonto, Sprite nuevoSprite, TiendaManager nuevoManager)
     {
-        
-    }
+        ItemID = nuevoID;
+        Monto = nuevoMonto;
+        imgIcono.sprite = nuevoSprite;
+        manager = nuevoManager;
+        Comprable = true;
+        Adquirido = false;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public void ActualizarIcono(Image nuevoIcono)
-    {
-        imgIcono = nuevoIcono;
-    }
-
-    public void ActualizarDescripcion(string nuevaDescripcion)
-    {
-        descripcion = nuevaDescripcion;
-    }
-
-    public void ActualizarMonto(int nuevoMonto)
-    {
-        monto = nuevoMonto;
-        txtMonto.text = monto.ToString();
-    }
-
-    public void ActualizarNombre(string nuevoNombre)
-    {
-        nombre = nuevoNombre;
+        txtMonto.text = Monto.ToString();
     }
 
     public void Apretado()
     {
+        manager.NuevoIconoSeleccionado(ItemID, Comprable, Adquirido);
+    }
 
+    public void Adquirir()
+    {
+        Adquirido = true;
+        Comprable = false;
+        imgAdquirido.SetActive(true);
+    }
+
+    public void CambiarComprabilidad(bool nuevoEstado)
+    {
+        Comprable = nuevoEstado;
+
+        imgIncomprable.SetActive(!Comprable);
     }
 }
