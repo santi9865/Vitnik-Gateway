@@ -122,6 +122,36 @@ public class ConexionDatabase : MonoBehaviour
         return resultados;
     }
 
+    public object ObtenerPrimerValorSegunColumna(object valorFiltro, string columnaFiltro, string columna)
+    {
+        AbrirConexion();
+
+        object resultado = null;
+
+        string valorFiltroAsignado = "";
+
+        if(valorFiltro is System.String)
+        {
+            valorFiltroAsignado = "\"" + valorFiltro +"\"";
+        }
+        else
+        {
+            valorFiltroAsignado = valorFiltro.ToString();
+        }
+
+
+        string comando = $"SELECT {columna} FROM {tabla} WHERE {columnaFiltro} = {valorFiltroAsignado}";
+
+        SqliteDataReader reader = EjecutarComandoConRetorno(comando);
+
+        if(reader.Read())
+        {
+            resultado = reader.GetValue(0);
+        }
+
+        return resultado;
+    }
+
     public List<System.Object> ObtenerValoresColumnasSegunID(int id, List<string> columnas)
     {
         AbrirConexion();
