@@ -1,34 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-using System.Linq;
+
 
 public class LogrosManager : MonoBehaviour
 {
     [SerializeField] private ConexionDatabase databaseLogros;
-    [SerializeField] private ConexionDatabase databaseLogrosJugador;
+    [SerializeField] private ConexionDatabase databaseStatsJugador;
 
-    [SerializeField] private GameObject contenedorLogros;
-
-    [SerializeField] private GameObject prefabPanelLogro;
+    [SerializeField] private LogrosPresenter presenter;
 
     private List<Logro> logros;
 
-
-    // Start is called before the first frame update
     void Start()
     {
         CargarLogros();
-        CargarProgresoLogros();
-        CrearPanelesLogros();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
         
+        if(presenter != null)
+        {
+            presenter.PresentarLogros(logros);
+        }
     }
 
     private void CargarLogros()
@@ -59,45 +50,15 @@ public class LogrosManager : MonoBehaviour
                 (string)lecturaLogro[2],
                 (string)lecturaLogro[3],
                 System.Convert.ToInt32(lecturaLogro[4]),
-                System.Convert.ToInt32(lecturaLogro[5])
+                System.Convert.ToInt32(lecturaLogro[5]),
+                System.Convert.ToInt32(lecturaLogro[6]),
+                (string)lecturaLogro[7],
+                System.Convert.ToInt32(lecturaLogro[8]),
+                this
             );
 
             logros.Add(nuevoLogro);
         }
-    }
-
-    private void CargarProgresoLogros()
-    {
-        Debug.Log("Cargando progreso.");
-
-        List<object> lecturaLogros = databaseLogrosJugador.ObtenerValoresColumna("IDAchievement");
-
-        List<int> IDsProgresoJugador = new List<int>();
-
-        foreach(object lectura in lecturaLogros)
-        {
-            IDsProgresoJugador.Add(System.Convert.ToInt32(lectura));
-        }
-        
-        if(IDsProgresoJugador.Count == 0)
-        {
-            Debug.Log("El lugador no ha hecho progreso en ningún logro todavía.");
-            return;
-        }
-
-        Logro logroAModificar;
-        int progreso;
-
-        foreach(int IDLogro in IDsProgresoJugador)
-        {
-            logroAModificar = ObtenerLogroPorID(IDLogro);
-            progreso = System.Convert.ToInt32(databaseLogrosJugador.ObtenerPrimerValorSegunColumna(IDLogro, "IDAchievement", "Progreso"));
-
-            logroAModificar.CambiarProgreso(progreso);
-
-            Debug.Log("Cambiado progreso a " + progreso + " de " + logroAModificar.Nombre);
-        }
-
     }
 
     private Logro ObtenerLogroPorID(int IDLogro)
@@ -113,25 +74,48 @@ public class LogrosManager : MonoBehaviour
         return null;
     }
 
-    private void CrearPanelesLogros()
+    public void NotificarLogro(int id, int valor)
     {
-        Debug.Log("Creando paneles de Logros.");
-
-        GameObject nuevoPanel;
-        PanelLogro scriptNuevoPanel;
-
         foreach(Logro logro in logros)
         {
-            nuevoPanel = Instantiate(prefabPanelLogro, contenedorLogros.transform);
-            scriptNuevoPanel = nuevoPanel.GetComponent<PanelLogro>();
-
-            scriptNuevoPanel.Actualizar(logro.Nombre, logro.Descripcion, logro.Progreso / (float)logro.Meta, ObtenerSpriteLogroSegunID(logro.ID));
+            if(logro.ID == id)
+            {
+                if(logro.CambiarProgreso(valor))
+                {
+                    databaseLogros.ModificarValor("Progreso", logro.Progreso, "ID", logro.ID);
+                }
+            }
         }
     }
 
-    private Sprite ObtenerSpriteLogroSegunID(int ID)
+    public void ImpartirRecompensa(string tipoRecompensa, int valorRecompensa)
     {
-        return Resources.Load<Sprite>($"Placeholders/IconosLogros/{ID}");
+        switch(tipoRecompensa)
+        {
+            case "Monedas":
+                AgregarMonedasAJugador(valorRecompensa);
+                break;
+            case "Item":
+                AgregarItemAJugador(valorRecompensa);
+                break;
+        }
     }
 
+    private void AgregarItemAJugador(int item)
+    {
+        string itemsAdquiridosJugador = databaseStatsJugador.ObtenerPrimerValor("IDItemsAdquiridos").ToString();
+
+        itemsAdquiridosJugador += item.ToString() + ",";
+
+        databaseStatsJugador.ModificarValor("IDItemsAdquiridos", itemsAdquiridosJugador, "ID", 0);
+    }
+
+    private void AgregarMonedasAJugador(int monedas)
+    {
+        int monedasJugador = System.Convert.ToInt32(databaseStatsJugador.ObtenerPrimerValor("Monedas"));
+
+        monedasJugador += monedas;
+
+        databaseStatsJugador.ModificarValor("Monedas", monedasJugador, "ID", 0);
+    }
 }

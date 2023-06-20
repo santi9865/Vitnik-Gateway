@@ -6,26 +6,31 @@ public class BehaviourPista : MonoBehaviour
 {
     [SerializeField] private PistaManager pistaManager;
     [SerializeField] private float longitud;
+    public float Longitud {get => longitud;}
+    [SerializeField] private TipoPista tipo;
+    public TipoPista Tipo {get => tipo;}
 
+    [SerializeField] private GameObject ramaDerecha;
+    public GameObject RamaDerecha {get => ramaDerecha;}
+
+    [SerializeField] private GameObject ramaIzquierda;
+    public GameObject RamaIzquierda {get => ramaIzquierda;}
+
+    public Eje EjeMovimiento;
     public List<GrupoObstaculos> gruposObstaculos;
     public List<GameObject> monedas;
 
-    public float Longitud {get => longitud;}
+    //Estas son pistas que deben desaparecer junto con esta pista, pero que no están en una rama.
+    public List<GameObject> pistasAsociadas;
 
-    public void OrdenarGruposObstaculos()
+    void Start()
     {
-        for( int i = 0; i < gruposObstaculos.Count; i++)
-        {
-            for(int j = i; j < gruposObstaculos.Count; j++)
-            {
-                if(gruposObstaculos[i].Posicion > gruposObstaculos[j].Posicion)
-                {
-                    GrupoObstaculos memoria = gruposObstaculos[i];
-                    gruposObstaculos[i] = gruposObstaculos[j];
-                    gruposObstaculos[j] = memoria;
-                }
-            }
-        }
+        ReiniciarEje();
+    }
+
+    public void ReiniciarEje()
+    {
+        EjeMovimiento = new Eje(EjeDireccion.Z, EjeSentido.Positivo);
     }
 
     public void DesactivarObstaculosAsociados()
@@ -36,6 +41,8 @@ public class BehaviourPista : MonoBehaviour
             {
                 grupo.DesactivarObstaculos();
             }
+
+            gruposObstaculos.Clear();
         }
     }
 
@@ -46,17 +53,37 @@ public class BehaviourPista : MonoBehaviour
             foreach(GameObject moneda in monedas)
             {
                 moneda.SetActive(false);
+                moneda.GetComponent<BehaviourMoneda>().ReiniciarMoneda();
             }
-            //Debug.Log("Monedas borradas.");
+
+            monedas.Clear();
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void DesactivarPistasAsociadas()
     {
-        if(other.gameObject.CompareTag("Player"))
+        if(pistasAsociadas != null)
         {
-            pistaManager.CircularPistas();
+            foreach(GameObject pista in pistasAsociadas)
+            {
+                BehaviourPista scriptPista = pista.GetComponent<BehaviourPista>();
+
+                scriptPista.DesactivarObstaculosAsociados();
+                scriptPista.DesactivarMonedasAsociadas();
+                scriptPista.DesactivarPistasAsociadas();
+                scriptPista.LimpiarRamas();
+                scriptPista.ReiniciarEje();
+            }
+            
+            pistasAsociadas.Clear();
         }
+
+        pistasAsociadas = null;
+    }
+
+    public void JugadorEntroColliderInicio()
+    {
+        pistaManager.CircularPistas(this.gameObject);
     }
 
     public void RemoverMoneda(GameObject moneda)
@@ -66,4 +93,32 @@ public class BehaviourPista : MonoBehaviour
             monedas.Remove(moneda);
         }
     } 
+
+    public void LimpiarRamas()
+    {
+        if(ramaDerecha != null)
+        {
+            ramaDerecha.GetComponent<Rama>().LimpiarPistas();
+        }
+
+        if(ramaIzquierda != null)
+        {
+            ramaIzquierda.GetComponent<Rama>().LimpiarPistas();
+        }
+    }
+}
+
+public enum TipoPista
+{
+    Recta, 
+    InterIzquierda, 
+    InterDerecha, 
+    InterT, 
+    InterCruz, 
+    RectaRotaDerecha, 
+    RectaRotaIzquierda, 
+    RectaRecupDerecha, 
+    RectaRecupIzquierda,
+    InterLIzquierda,
+    InterLDerecha
 }

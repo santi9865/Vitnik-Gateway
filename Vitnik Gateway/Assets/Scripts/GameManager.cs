@@ -66,4 +66,16 @@ public class GameManager : MonoBehaviour
 
         hudManager.ActualizarDistancia();
     }
+
+    public void JugadorDobloDerecha(GameObject pista, Rama rama)
+    {
+        PistaManager pistaManager = GetComponent<PistaManager>();
+        pistaManager.CambiarSendaPrincipal(pista, rama);
+    }
+
+    public void JugadorDobloIzquierda(GameObject pista, Rama rama)
+    {
+        PistaManager pistaManager = GetComponent<PistaManager>();
+        pistaManager.CambiarSendaPrincipal(pista, rama);
+    }
 }

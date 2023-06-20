@@ -9,14 +9,24 @@ public class LugarObstaculo
     public bool Libre {get;set;}
 
     private GameObject _obstaculo;
+    private Quaternion rotacionInicialObstaculo;
     public GameObject Obstaculo 
     {
         get => _obstaculo;
     
         set
         {
-            Libre = false;
+            if(value == null)
+            {
+                Libre = true;
+            }
+            else
+            {
+                rotacionInicialObstaculo = value.transform.rotation;
+                Libre = false;
+            }
             _obstaculo = value;
+
         }
     }
 
@@ -39,6 +49,16 @@ public class LugarObstaculo
         {
             Obstaculo.SetActive(false);
         }
+    }
+
+    public void ReiniciarObstaculo()
+    {
+        Obstaculo.transform.rotation = rotacionInicialObstaculo;
+    }
+
+    public void RotarObstaculo(float anguloY)
+    {
+        Obstaculo.transform.Rotate(0,anguloY,0);
     }
 }
 

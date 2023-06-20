@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Tienda.unity
     guid: 4151dc7298b90014fb8bae3afe6234e0
+  - enabled: 1
+    path: Assets/Scenes/Inventario.unity
+    guid: 05b18d7923830794ea2ba777939a0a2d
   m_configObjects:
     com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000,
       guid: 4d56484d6f454d34080f724b68a07224, type: 2}

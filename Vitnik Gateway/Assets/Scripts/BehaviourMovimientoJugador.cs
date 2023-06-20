@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class BehaviourMovimientoJugador : MonoBehaviour
 {
+    public Eje EjeMovimiento {get; private set;}
+    public Vector3 Orientacion {get; private set;} //Arriba o abajo
     [SerializeField] private float velocidad;
     [SerializeField] private float distanciaMaximaSalto;
     public float DistanciaSalto {get => distanciaMaximaSalto;}
@@ -15,7 +17,12 @@ public class BehaviourMovimientoJugador : MonoBehaviour
     public float AlturaMaxima {get => alturaMaxima;}  
     [SerializeField] private bool vivo = true;
 
-    [SerializeField] private List<GameObject> carriles;
+    [SerializeField] private bool puedeDoblarIzquierda = false;
+    [SerializeField] private bool puedeDoblarDerecha = false;
+    private bool doblando = false;
+    private Rama ramaDisponible;
+
+    [SerializeField] private List<Carril> carriles;
     [SerializeField] private int carrilActual = 1;
     [SerializeField] private BehaviourMiniPantallas scriptMiniPantallas;
 
@@ -24,6 +31,10 @@ public class BehaviourMovimientoJugador : MonoBehaviour
     [SerializeField] private Vector3 centroColliderDesliz;
     [SerializeField] private Vector3 tamañoColliderDesliz;
     [SerializeField] private float tiempoMaximoCambioCarril;
+
+    //Distancia que el jugador recorre a lo largo (no en horizontal) de un cambio de carril.
+    public float DistanciaCambioCarril {get => tiempoMaximoCambioCarril * velocidad;}
+
     private float timerDesliz;
     private float tiempoMaximoDesliz;
     private bool deslizando;
@@ -38,7 +49,7 @@ public class BehaviourMovimientoJugador : MonoBehaviour
     private float timerSalto;
     private float tiempoMaximoSalto;
 
-    private float posicionAnterior;  
+    private Vector3 posicionAnterior;  
 
     private BehaviourPlayerCollisionDetector detectorColisiones;
 
@@ -50,7 +61,10 @@ public class BehaviourMovimientoJugador : MonoBehaviour
 
         animatorJugador = gameObject.GetComponentInChildren<Animator>();
 
-        posicionAnterior = gameObject.transform.position.z;
+        EjeMovimiento = new Eje(EjeDireccion.Z, EjeSentido.Positivo);
+        Orientacion = new Vector3(0,1,0);
+
+        posicionAnterior = gameObject.transform.position;
     }
 
     // Update is called once per frame
@@ -86,6 +100,22 @@ public class BehaviourMovimientoJugador : MonoBehaviour
                     Deslizar();
                 }
             }
+            if(Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                if(!doblando && !cambiandoCarril && !deslizando && !saltando && puedeDoblarIzquierda)
+                {
+                    DoblarIzquierda();
+                }
+            }
+
+            if(Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                if(!doblando && !cambiandoCarril && !deslizando && !saltando && puedeDoblarDerecha)
+                {
+                    DoblarDerecha();
+                }
+            }
+
         }
     }
 
@@ -162,7 +192,23 @@ public class BehaviourMovimientoJugador : MonoBehaviour
 
     private void AjustarCarril()
     {
-        gameObject.transform.position = new Vector3(carrilFinal.x, gameObject.transform.position.y, gameObject.transform.position.z);
+        Vector3 vectorPerpendicular;
+        Vector3 vectorParalelo;
+
+        if(EjeMovimiento.Direccion == EjeDireccion.X)
+        {
+            vectorPerpendicular = Vector3.forward;     
+            vectorParalelo = Vector3.right;     
+        }
+        else
+        {
+            vectorPerpendicular = Vector3.right;
+            vectorParalelo = Vector3.forward; 
+        }
+
+        Vector3 vectorAjustador = Vector3.Scale(carrilFinal, vectorPerpendicular);
+
+        gameObject.transform.position = vectorAjustador + Vector3.Scale(gameObject.transform.position, vectorParalelo) + Vector3.Scale(gameObject.transform.position, Vector3.up);
     }
 
     private void CambiarACarril()
@@ -188,15 +234,20 @@ public class BehaviourMovimientoJugador : MonoBehaviour
         //Debug.Log("timer por 0.5f^3: " + Mathf.Pow(0.5F,3) * (timerCambioCarril));
         //Debug.Log("interpolador: " + interpolador);
 
-        gameObject.transform.position = new Vector3(Vector3.Lerp(carrilInicial,carrilFinal,interpolador).x, gameObject.transform.position.y, gameObject.transform.position.z);
+
+        Vector3 vectorInterpolador = Vector3.Scale(Vector3.Lerp(carrilInicial,carrilFinal,interpolador), EjeMovimiento.VectorAxisPerpendicular);
+
+        gameObject.transform.position = vectorInterpolador + Vector3.Scale(gameObject.transform.position, EjeMovimiento.VectorAxisParalelo) + Vector3.Scale(gameObject.transform.position, Vector3.up);
+
+        //gameObject.transform.position = new Vector3(Vector3.Lerp(carrilInicial,carrilFinal,interpolador).x, gameObject.transform.position.y, gameObject.transform.position.z);
     }
 
     private void MoverseALaDerecha()
     {
         if (carrilActual < carriles.Count - 1)
         {
-            carrilInicial = carriles[carrilActual].transform.position;
-            carrilFinal = carriles[carrilActual + 1].transform.position;
+            carrilInicial = carriles[carrilActual].Posicion.transform.position;
+            carrilFinal = carriles[carrilActual + 1].Posicion.transform.position;
 
             carrilActual++;
 
@@ -211,8 +262,8 @@ public class BehaviourMovimientoJugador : MonoBehaviour
     {
         if (carrilActual > 0)
         {
-            carrilInicial = carriles[carrilActual].transform.position;
-            carrilFinal = carriles[carrilActual - 1].transform.position;
+            carrilInicial = carriles[carrilActual].Posicion.transform.position;
+            carrilFinal = carriles[carrilActual - 1].Posicion.transform.position;
 
             carrilActual--;
 
@@ -250,17 +301,112 @@ public class BehaviourMovimientoJugador : MonoBehaviour
     {
         float altura = (-4 * Mathf.Pow(timerSalto / tiempoMaximoSalto, 2) + 4 * (timerSalto / tiempoMaximoSalto)) * alturaMaxima;
 
-        gameObject.transform.position = new Vector3(gameObject.transform.position.x, altura + alturaBase, gameObject.transform.position.z);
+        Vector3 vectorAltura = (altura + alturaBase) * Orientacion;
+
+        gameObject.transform.position = Vector3.Scale(gameObject.transform.position, Vector3.one - Orientacion) + vectorAltura;
+    }
+
+    #endregion
+
+    #region Doblar
+
+    private void DoblarDerecha()
+    {
+        if(ramaDisponible == null)
+        {
+            Debug.Log("Error al doblar, la rama es null.");
+            return;
+        }
+        doblando = true;
+        puedeDoblarDerecha = false;
+
+        Carril carrilDestino = EncontrarCarrilMasCercanoEnRamaDisponible();
+
+        gameObject.transform.position = Vector3.Scale(carrilDestino.Posicion.transform.position, ramaDisponible.EjeMovimiento.VectorAxisPerpendicular)
+        + Vector3.Scale(gameObject.transform.position, ramaDisponible.EjeMovimiento.VectorAxisParalelo + Orientacion);
+
+        gameObject.transform.Rotate(0, 90, 0);
+
+        EjeMovimiento.GirarDerecha();
+
+        GameManager.Instancia.JugadorDobloDerecha(ramaDisponible.PistaPadre, ramaDisponible);
+
+        doblando = false;
+    }
+
+    private void DoblarIzquierda()
+    {
+        if(ramaDisponible == null)
+        {
+            Debug.Log("Error al doblar, la rama es null.");
+            return;
+        }
+        doblando = true;
+        puedeDoblarIzquierda = false;
+
+        Carril carrilDestino = EncontrarCarrilMasCercanoEnRamaDisponible();
+
+        gameObject.transform.position = Vector3.Scale(carrilDestino.Posicion.transform.position, ramaDisponible.EjeMovimiento.VectorAxisPerpendicular)
+        + Vector3.Scale(gameObject.transform.position, ramaDisponible.EjeMovimiento.VectorAxisParalelo + Orientacion);
+
+        gameObject.transform.Rotate(0, -90, 0);
+
+        EjeMovimiento.GirarIzquierda();
+
+        GameManager.Instancia.JugadorDobloIzquierda(ramaDisponible.PistaPadre, ramaDisponible);
+
+        doblando = false;
+    }
+
+    private Carril EncontrarCarrilMasCercanoEnRamaDisponible()
+    {
+        Carril carrilMasCercano = ramaDisponible.GetComponentInChildren<BehaviourListaCarriles>().Carriles[0];
+
+        float distanciaMinima = 0;
+        foreach(Carril carril in ramaDisponible.GetComponentInChildren<BehaviourListaCarriles>().Carriles)
+        {
+            float distancia =  Mathf.Abs(Vector3.Dot(carril.Posicion.transform.position - gameObject.transform.position, EjeMovimiento.Vectorizado));
+
+            if(distancia < distanciaMinima)
+            {
+                distanciaMinima = distancia;
+                carrilMasCercano = carril;
+            }
+        }
+
+        return carrilMasCercano;
+    }
+
+    public void RamaDisponible(Rama nuevaRama)
+    {
+        switch (nuevaRama.TipoRama)
+        {
+            case TipoRama.Derecha:
+                puedeDoblarDerecha = true;
+                break;
+            case TipoRama.Izquierda:
+                puedeDoblarIzquierda = true;
+                break;
+        }
+
+        ramaDisponible = nuevaRama;
+    }
+
+    public void InhabilitarDoblar()
+    {
+        puedeDoblarDerecha = false;
+        puedeDoblarIzquierda = false;
+        ramaDisponible = null;
     }
 
     #endregion
 
     private void MoverseHaciaAdelante()
     {
-        gameObject.transform.Translate(Vector3.forward * velocidad * Time.deltaTime);
+        gameObject.transform.Translate(EjeMovimiento.Vectorizado * velocidad * Time.deltaTime);
 
-        GameManager.Instancia.AddDistancia(gameObject.transform.position.z - posicionAnterior);
-        posicionAnterior = gameObject.transform.position.z;
+        GameManager.Instancia.AddDistancia(Vector3.Dot(gameObject.transform.position, EjeMovimiento.Vectorizado) - Vector3.Dot(posicionAnterior, EjeMovimiento.Vectorizado));
+        posicionAnterior = gameObject.transform.position;
     }
 
     //Este m�todo es llamado por el script del detector de colisiones del jugador
@@ -281,7 +427,7 @@ public class BehaviourMovimientoJugador : MonoBehaviour
 
     public void NuevaSeccionPista(GameObject seccion)
     {
-        carriles = seccion.GetComponent<BehaviourListaCarriles>().Carriles;
+        carriles = seccion.GetComponentInChildren<BehaviourListaCarriles>().Carriles;
     }
 
     //Start of debug methods

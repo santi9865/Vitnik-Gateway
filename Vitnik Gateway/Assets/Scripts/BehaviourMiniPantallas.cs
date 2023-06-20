@@ -9,6 +9,9 @@ public class BehaviourMiniPantallas : MonoBehaviour
     [SerializeField] private GameObject pantallaOpciones;
     [SerializeField] private GameManager gameManager;
 
+    public bool pantallaPausaActive {get {return pantallaPausa.activeSelf;}}
+    public bool pantallaOpcionesActive {get {return pantallaOpciones.activeSelf;}}
+
     private bool pantallaPausaActivaAnterior = false;
 
 
@@ -63,6 +66,8 @@ public class BehaviourMiniPantallas : MonoBehaviour
         }
         else
         {
+            SoundManager.Instancia.GuardarOpciones();
+
             if(pantallaPausaActivaAnterior)
             {
                 PantallaPausaSetActive(true);

@@ -5,10 +5,10 @@ using UnityEngine;
 public class GrupoObstaculos
 {
     public List<LugarObstaculo> Lugares;
-    public float Posicion {get;}
-    public List<GameObject> Carriles;
+    public Vector3 Posicion {get;}
+    public List<Carril> Carriles;
 
-    public GrupoObstaculos(float posicion, List<LugarObstaculo> lugares, List<GameObject> carriles)
+    public GrupoObstaculos(Vector3 posicion, List<LugarObstaculo> lugares, List<Carril> carriles)
     {
         Posicion = posicion;
         Lugares = lugares;
@@ -17,9 +17,13 @@ public class GrupoObstaculos
 
     public void DesactivarObstaculos()
     {
-        foreach(LugarObstaculo lugar in Lugares)
+        if(Lugares != null)
         {
-            lugar.DesactivarObstaculo();
+            foreach(LugarObstaculo lugar in Lugares)
+            {
+                lugar.ReiniciarObstaculo();
+                lugar.DesactivarObstaculo();
+            }
         }
     }
 
@@ -29,7 +33,7 @@ public class GrupoObstaculos
         
         foreach(LugarObstaculo lugar in Lugares)
         {
-            Carril scriptCarril = Carriles[lugar.Carril].GetComponent<Carril>();
+            Carril scriptCarril = Carriles[lugar.Carril];
 
             if(scriptCarril.Habilitado && lugar.Libre)
             {
@@ -43,7 +47,7 @@ public class GrupoObstaculos
 
         foreach(LugarObstaculo lugar in Lugares)
         {
-            Carril scriptCarril = Carriles[lugar.Carril].GetComponent<Carril>();
+            Carril scriptCarril = Carriles[lugar.Carril];
 
             if(scriptCarril.Habilitado && lugar.Libre)
             {

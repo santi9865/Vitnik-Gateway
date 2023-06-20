@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2598352307226069993}
   - component: {fileID: 4273261807356591052}
   - component: {fileID: 7544653577799850144}
+  - component: {fileID: 293178272510312990}
   m_Layer: 0
   m_Name: PistaCorregida
   m_TagString: Untagged
@@ -32,6 +33,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 571394188117178783}
+  - {fileID: 9036238405192777795}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -89.98, y: 0, z: 0}
@@ -99,6 +101,84 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -2232952877369940510, guid: d827d3bdfc610e54f92e8b02b97523d0, type: 3}
+--- !u!114 &293178272510312990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1479424787721968940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9f01514a145a164aa0423b0b0e04839, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pistaManager: {fileID: 0}
+  longitud: 13.2
+  tipo: 0
+  ramaDerecha: {fileID: 0}
+  ramaIzquierda: {fileID: 0}
+  monedas: []
+  pistasAsociadas: []
+--- !u!1 &1703813499197674011
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9036238405192777795}
+  - component: {fileID: 2959722658215178912}
+  - component: {fileID: 5216181346449541147}
+  m_Layer: 0
+  m_Name: ColliderInicioPista
+  m_TagString: ColliderInicioPista
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9036238405192777795
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1703813499197674011}
+  m_LocalRotation: {x: -0.00017455219, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6570054557445507178}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &2959722658215178912
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1703813499197674011}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.55534077, y: 0.011092315, z: 0.28583777}
+  m_Center: {x: 0, y: 0.60557383, z: 0.21273458}
+--- !u!114 &5216181346449541147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1703813499197674011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ada253498f344324da122f51f534d3c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  behaviourPistaPadre: {fileID: 293178272510312990}
 --- !u!1 &3020314256286753511
 GameObject:
   m_ObjectHideFlags: 0
@@ -145,6 +225,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _tipo: 0
   _habilitado: 1
+  _posicion: {fileID: 3020314256286753511}
 --- !u!1 &3346851998193192827
 GameObject:
   m_ObjectHideFlags: 0
@@ -154,12 +235,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 571394188117178783}
-  - component: {fileID: 2629101290521318674}
   - component: {fileID: 6697220365267335920}
-  - component: {fileID: 1293509944707783833}
   m_Layer: 0
   m_Name: Carriles
-  m_TagString: ColliderInicioPista
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -182,19 +261,6 @@ Transform:
   m_Father: {fileID: 6570054557445507178}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &2629101290521318674
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3346851998193192827}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.55534077, y: 0.046388965, z: 0.2858378}
-  m_Center: {x: 0, y: 0.623222, z: 0.2127332}
 --- !u!114 &6697220365267335920
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -208,24 +274,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   carriles:
-  - {fileID: 3020314256286753511}
-  - {fileID: 8571215889522790662}
-  - {fileID: 4403920542249609545}
---- !u!114 &1293509944707783833
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3346851998193192827}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9f01514a145a164aa0423b0b0e04839, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pistaManager: {fileID: 0}
-  longitud: 13.2
-  monedas: []
+  - {fileID: 3027883876357384682}
+  - {fileID: 2283610883831175598}
+  - {fileID: 1171617163447224314}
 --- !u!1 &4403920542249609545
 GameObject:
   m_ObjectHideFlags: 0
@@ -272,6 +323,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _tipo: 2
   _habilitado: 1
+  _posicion: {fileID: 4403920542249609545}
 --- !u!1 &8571215889522790662
 GameObject:
   m_ObjectHideFlags: 0
@@ -318,3 +370,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _tipo: 1
   _habilitado: 1
+  _posicion: {fileID: 8571215889522790662}

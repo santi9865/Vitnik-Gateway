@@ -11,18 +11,6 @@ public class PanelLogro : MonoBehaviour
     [SerializeField] private Image imgIcono;
     [SerializeField] private Slider sliProgreso;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void Actualizar(string nombre, string descripcion, float progreso, Sprite icono)
     {
         txtNombre.text = nombre;

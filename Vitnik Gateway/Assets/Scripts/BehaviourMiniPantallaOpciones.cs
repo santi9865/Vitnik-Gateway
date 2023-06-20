@@ -11,7 +11,7 @@ public class BehaviourMiniPantallaOpciones : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Actualizar();
     }
 
     // Update is called once per frame

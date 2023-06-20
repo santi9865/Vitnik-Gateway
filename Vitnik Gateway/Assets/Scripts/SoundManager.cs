@@ -8,6 +8,7 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioListener escucha;
     [SerializeField] private AudioSource reproductorMusica;
     [SerializeField] private AudioSource reproductorSonido;
+    [SerializeField] private ConexionDatabase databaseOpciones;
 
     //Sonidos
     [SerializeField] private AudioClip sonidoMoneda;
@@ -15,9 +16,6 @@ public class SoundManager : MonoBehaviour
     //Musica
     [SerializeField] private AudioClip musicaNivel1;
 
-
-
-    // Start is called before the first frame update
     void Start()
     {
         if(Instancia == null)
@@ -32,14 +30,14 @@ public class SoundManager : MonoBehaviour
 
         //escucha = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<AudioListener>();
         //reproductor = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<AudioSource>();
-
+        CargarOpciones();
         ReproducirMusica(Musica.Nivel1);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void CargarOpciones()
     {
-        
+        reproductorSonido.volume = System.Convert.ToSingle(databaseOpciones.ObtenerPrimerValor("VolumenSonido"));
+        reproductorMusica.volume = System.Convert.ToSingle(databaseOpciones.ObtenerPrimerValor("VolumenMusica"));
     }
 
     public void ReproducirMusica(Musica clip)
@@ -117,6 +115,12 @@ public class SoundManager : MonoBehaviour
     public float ObtenerVolumenSonido()
     {
         return reproductorSonido.volume;
+    }
+
+    public void GuardarOpciones()
+    {
+        databaseOpciones.ModificarValor("VolumenMusica", reproductorMusica.volume, "ID", 0);
+        databaseOpciones.ModificarValor("VolumenSonido", reproductorSonido.volume, "ID", 0);
     }
 
 }

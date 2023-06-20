@@ -5,22 +5,23 @@ using UnityEngine;
 public class BehaviourMoneda : MonoBehaviour
 {
     public BehaviourPista pistaAsociada;
-    // Start is called before the first frame update
+    private Quaternion rotacionOriginal;
+
     void Start()
     {
-        
+        rotacionOriginal = transform.rotation;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void ReiniciarMoneda()
     {
-        
+        transform.rotation = rotacionOriginal;
     }
 
-    public void Destruir()
+    public void Agarrar()
     {
         SoundManager.Instancia.ReproducirSonido(Sonido.Moneda);
         pistaAsociada.RemoverMoneda(gameObject);
         gameObject.SetActive(false);
+        ReiniciarMoneda();
     }
 }

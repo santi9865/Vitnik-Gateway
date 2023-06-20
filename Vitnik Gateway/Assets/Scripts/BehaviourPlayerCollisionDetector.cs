@@ -34,14 +34,27 @@ public class BehaviourPlayerCollisionDetector : MonoBehaviour
                 break;
             case "Moneda":
                 scriptMovimientoJugador.ColisionObstaculo(ObstacleType.Moneda);
-                other.gameObject.GetComponent<BehaviourMoneda>().Destruir();
+                other.gameObject.GetComponent<BehaviourMoneda>().Agarrar();
                 break;
             case "ColliderInicioPista":
-                scriptMovimientoJugador.NuevaSeccionPista(other.gameObject);
+                scriptMovimientoJugador.NuevaSeccionPista(other.gameObject.transform.parent.gameObject);
                 break;
-
+            case "ColliderRama":
+                scriptMovimientoJugador.RamaDisponible(other.gameObject.GetComponent<BehaviourColliderRama>().RamaAsociada);
+                break;
         }
     }
+
+    private void OnTriggerExit(Collider other)
+    {
+        switch(other.gameObject.tag)
+        {
+            case "ColliderRama":
+                scriptMovimientoJugador.InhabilitarDoblar();
+                break;
+        }
+    }
+
 
 }
 

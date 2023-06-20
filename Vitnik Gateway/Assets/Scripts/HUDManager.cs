@@ -11,7 +11,6 @@ public class HUDManager : MonoBehaviour
     [SerializeField] private TMP_Text txtMonedas;
     [SerializeField] private TMP_Text txtDistancia;
     [SerializeField] private BehaviourMiniPantallas behaviourMiniPantallas;
-    [SerializeField] private Button btnPausa;
 
     private bool estadoBtnPausa;
 
@@ -42,8 +41,13 @@ public class HUDManager : MonoBehaviour
         if(estadoBtnPausa)
         {
             EventSystem.current.SetSelectedGameObject(null);
-            GameManager.Instancia.UnPauseGame();
             ActualizarEstadoBtnPausa(false);
+
+            if(behaviourMiniPantallas.pantallaOpcionesActive)
+            {
+                behaviourMiniPantallas.PantallaOpcionesSetActive(false);
+            }
+            GameManager.Instancia.UnPauseGame();
             behaviourMiniPantallas.PantallaPausaSetActive(false);
         }
         else
