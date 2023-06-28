@@ -5,6 +5,8 @@ using UnityEngine;
 public class BehaviourPista : MonoBehaviour
 {
     [SerializeField] private PistaManager pistaManager;
+
+    public PistaManager PistaManager {get => pistaManager; set => pistaManager = value;}
     [SerializeField] private float longitud;
     public float Longitud {get => longitud;}
     [SerializeField] private TipoPista tipo;
@@ -23,13 +25,17 @@ public class BehaviourPista : MonoBehaviour
     //Estas son pistas que deben desaparecer junto con esta pista, pero que no están en una rama.
     public List<GameObject> pistasAsociadas;
 
+    [SerializeField] private Quaternion rotacionOriginal;
+
     void Start()
     {
+        rotacionOriginal = transform.rotation;
         ReiniciarEje();
     }
 
     public void ReiniciarEje()
     {
+        transform.rotation = rotacionOriginal;
         EjeMovimiento = new Eje(EjeDireccion.Z, EjeSentido.Positivo);
     }
 
@@ -117,8 +123,10 @@ public enum TipoPista
     InterCruz, 
     RectaRotaDerecha, 
     RectaRotaIzquierda, 
-    RectaRecupDerecha, 
-    RectaRecupIzquierda,
+    RectaRotaInicioDerecha, 
+    RectaRotaInicioIzquierda,
+    RectaRotaFinDerecha, 
+    RectaRotaFinIzquierda,
     InterLIzquierda,
     InterLDerecha
 }

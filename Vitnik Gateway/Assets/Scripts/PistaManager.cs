@@ -174,12 +174,12 @@ public class PistaManager : MonoBehaviour
             Rama scriptRamaDerecha = scripPistaBase.RamaDerecha.GetComponent<Rama>();
             scriptRamaDerecha.AlinearSegunPadre(scripPistaBase.EjeMovimiento);
 
-            Vector3 posicionInicial = scripPistaBase.RamaDerecha.transform.position;
+            Vector3 posicionInicial = pistaBase.transform.position + (scripPistaBase.Longitud / 2) * scriptRamaDerecha.EjeMovimiento.Vectorizado;
 
             for(int i = 0; i < pistasPorRama; i++)
             {
                 GameObject nuevaPista = SpawnearPista(ObtenerPistaDesactivada(), scriptRamaDerecha.EjeMovimiento, posicionInicial);
-                posicionInicial = nuevaPista.transform.position;
+                posicionInicial = nuevaPista.transform.position + (scripPistaBase.Longitud / 2) * scriptRamaDerecha.EjeMovimiento.Vectorizado;
                 scriptRamaDerecha.Pistas.Add(nuevaPista);
             }   
         }
@@ -189,14 +189,14 @@ public class PistaManager : MonoBehaviour
             Rama scriptRamaIzquierda = scripPistaBase.RamaIzquierda.GetComponent<Rama>();
             scriptRamaIzquierda.AlinearSegunPadre(scripPistaBase.EjeMovimiento);
 
-            Vector3 posicionInicial = scripPistaBase.RamaIzquierda.transform.position;
+            Vector3 posicionInicial = pistaBase.transform.position + (scripPistaBase.Longitud / 2) * scriptRamaIzquierda.EjeMovimiento.Vectorizado;
 
             for(int i = 0; i < pistasPorRama; i++)
             {
                 GameObject nuevaPista = SpawnearPista(ObtenerPistaDesactivada(), scriptRamaIzquierda.EjeMovimiento, posicionInicial);
-                posicionInicial = nuevaPista.transform.position;
+                posicionInicial = nuevaPista.transform.position + (scripPistaBase.Longitud / 2) * scriptRamaIzquierda.EjeMovimiento.Vectorizado;
                 scriptRamaIzquierda.Pistas.Add(nuevaPista);
-            } 
+            }
         }
     }
 
@@ -205,6 +205,7 @@ public class PistaManager : MonoBehaviour
         BehaviourPista scripPistaASpawnear = pistaASpawnear.GetComponent<BehaviourPista>();
 
         scripPistaASpawnear.ReiniciarEje();
+        scripPistaASpawnear.PistaManager = this;
         pistaASpawnear.transform.position = puntoInicio + (scripPistaASpawnear.Longitud / 2) * ejeOrientador.Vectorizado;
         pistaASpawnear.SetActive(true);
 

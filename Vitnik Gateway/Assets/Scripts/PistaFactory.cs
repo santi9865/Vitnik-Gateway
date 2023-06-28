@@ -11,8 +11,10 @@ public class PistaFactory : MonoBehaviour
     [SerializeField] private GameObject pistaInterCruz;
     [SerializeField] private GameObject pistaRotaDerecha;
     [SerializeField] private GameObject pistaRotaIzquierda;
-    [SerializeField] private GameObject pistaRecupDerecha;
-    [SerializeField] private GameObject pistaRecupIzquierda;
+    [SerializeField] private GameObject pistaRotaInicioDerecha;
+    [SerializeField] private GameObject pistaRotaInicioIzquierda;
+    [SerializeField] private GameObject pistaRotaFinDerecha;
+    [SerializeField] private GameObject pistaRotaFinIzquierda;
 
     [SerializeField] private GameObject contenedorPistas;
 
@@ -43,11 +45,17 @@ public class PistaFactory : MonoBehaviour
             case TipoPista.RectaRotaIzquierda:
                 pista = pistaRotaIzquierda;
                 break;
-            case TipoPista.RectaRecupDerecha:
-                pista = pistaRecupDerecha;
+            case TipoPista.RectaRotaInicioDerecha:
+                pista = pistaRotaInicioDerecha;
                 break;
-            case TipoPista.RectaRecupIzquierda:
-                pista = pistaRecupIzquierda;
+            case TipoPista.RectaRotaInicioIzquierda:
+                pista = pistaRotaInicioIzquierda;
+                break;
+            case TipoPista.RectaRotaFinDerecha:
+                pista = pistaRotaFinDerecha;
+                break;
+            case TipoPista.RectaRotaFinIzquierda:
+                pista = pistaRotaFinIzquierda;
                 break;
             default:
                 pista = pistaRecta;

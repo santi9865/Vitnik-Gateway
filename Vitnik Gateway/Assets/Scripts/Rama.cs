@@ -8,10 +8,6 @@ public class Rama : MonoBehaviour
     public Eje EjeMovimiento {get; private set;}
     [SerializeField] private TipoRama tipoRama;
 
-    [SerializeField] private GameObject _comienzo;
-
-    public GameObject Comienzo {get => _comienzo;}
-
     public TipoRama TipoRama{get {return tipoRama;}}
 
     public GameObject PistaPadre {get => gameObject.transform.parent.gameObject;}

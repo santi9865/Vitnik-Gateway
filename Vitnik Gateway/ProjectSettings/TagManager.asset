@@ -8,6 +8,7 @@ TagManager:
   - Moneda
   - ColliderInicioPista
   - ColliderRama
+  - ColliderFinPista
   layers:
   - Default
   - TransparentFX
