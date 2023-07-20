@@ -10,7 +10,9 @@ public class Rama : MonoBehaviour
 
     public TipoRama TipoRama{get {return tipoRama;}}
 
-    public GameObject PistaPadre {get => gameObject.transform.parent.gameObject;}
+    [SerializeField] private GameObject _pistaPadre;
+
+    public GameObject PistaPadre {get => _pistaPadre;}
 
     public void AlinearSegunPadre(Eje ejeMovimientoPadre)
     {

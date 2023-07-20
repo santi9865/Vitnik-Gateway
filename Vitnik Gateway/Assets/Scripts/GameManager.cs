@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private HUDManager hudManager;
     [SerializeField] private StatsJugador statsJugador;
+    [SerializeField] private BehaviourCamera scriptCamara;
 
     private void Awake()
     {
@@ -71,11 +72,19 @@ public class GameManager : MonoBehaviour
     {
         PistaManager pistaManager = GetComponent<PistaManager>();
         pistaManager.CambiarSendaPrincipal(pista, rama);
+
+        rama.AlinearSegunPadre(pista.GetComponent<BehaviourPista>().EjeMovimiento);
+
+        scriptCamara.AcomodarCamara(rama.EjeMovimiento);
     }
 
     public void JugadorDobloIzquierda(GameObject pista, Rama rama)
     {
         PistaManager pistaManager = GetComponent<PistaManager>();
         pistaManager.CambiarSendaPrincipal(pista, rama);
+
+        rama.AlinearSegunPadre(pista.GetComponent<BehaviourPista>().EjeMovimiento);
+
+        scriptCamara.AcomodarCamara(rama.EjeMovimiento);
     }
 }

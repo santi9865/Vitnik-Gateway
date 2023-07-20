@@ -29,8 +29,7 @@ public class BehaviourPista : MonoBehaviour
 
     void Start()
     {
-        rotacionOriginal = transform.rotation;
-        ReiniciarEje();
+
     }
 
     public void ReiniciarEje()
@@ -74,6 +73,7 @@ public class BehaviourPista : MonoBehaviour
             {
                 BehaviourPista scriptPista = pista.GetComponent<BehaviourPista>();
 
+                pista.SetActive(false);
                 scriptPista.DesactivarObstaculosAsociados();
                 scriptPista.DesactivarMonedasAsociadas();
                 scriptPista.DesactivarPistasAsociadas();

@@ -245,6 +245,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tipoRama: 1
+  _pistaPadre: {fileID: 4841817821787645592}
 --- !u!1 &4731214689245320940
 GameObject:
   m_ObjectHideFlags: 0
@@ -446,12 +447,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pistaManager: {fileID: 0}
   longitud: 14.27073
-  tipo: 10
+  tipo: 12
   ramaDerecha: {fileID: 4731214689205749570}
   ramaIzquierda: {fileID: 0}
   monedas: []
   pistasAsociadas: []
-  rotacionOriginal: {x: 0, y: 0, z: 0, w: 0}
+  rotacionOriginal: {x: 0.5, y: -0.5, z: 0.5, w: 0.5}
 --- !u!1 &5760383706355786699
 GameObject:
   m_ObjectHideFlags: 0

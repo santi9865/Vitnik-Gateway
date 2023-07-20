@@ -5,7 +5,6 @@ using UnityEngine;
 public class PistaManager : MonoBehaviour
 {
     [SerializeField] private List<GameObject> pistas;
-    [SerializeField] private Vector3 offset;
     [SerializeField] private int pistasMinimasInterseccion;
     [SerializeField] private float probabilidadInterseccion;
     [SerializeField] private int pistasPorRama;
@@ -13,6 +12,10 @@ public class PistaManager : MonoBehaviour
     //Que pista de la lista debería pasarse antes de borrar la última.
     [SerializeField] private int estelaDePistas;
 
+    //Probabilidad de que spawnee una pista rota de inicio.
+    [SerializeField] private float probabilidadDePistaRota;
+    //Probabilidad de que la rotura spawnee otra pista rota.
+    [SerializeField] private float probabilidadContinuarRotura;
     //Cuenta la cantidad de pistas que han transcurrido desde la última intersección.
     private float contadorInterseccion;
 
@@ -88,6 +91,8 @@ public class PistaManager : MonoBehaviour
 
         ejePrincipal = new Eje(nuevaRama.EjeMovimiento.Direccion, nuevaRama.EjeMovimiento.Sentido);
 
+        pistaDeInflexion.GetComponent<BehaviourPista>().pistasAsociadas = nuevasPistasAsociadas;
+
         contadorInterseccion = 0;
     }
 
@@ -115,6 +120,8 @@ public class PistaManager : MonoBehaviour
             }
         }
 
+        TipoPista tipoNuevaPista;
+
         //Si el tipo de pista tiene un final abrupto entonces no pone una pista nueva;
         switch(scriptUltimaPista.Tipo)
         {
@@ -122,37 +129,71 @@ public class PistaManager : MonoBehaviour
             case TipoPista.InterLDerecha:
             case TipoPista.InterLIzquierda:
                 return;
+            case TipoPista.RectaRotaInicioDerecha:
+            case TipoPista.RectaRotaDerecha:
+                if(probabilidadContinuarRotura >= Random.Range(0, 1f))
+                {
+                    tipoNuevaPista = TipoPista.RectaRotaDerecha;
+                }
+                else
+                {
+                    tipoNuevaPista = TipoPista.RectaRotaFinDerecha;
+                }
+                break;
+            case TipoPista.RectaRotaInicioIzquierda:
+            case TipoPista.RectaRotaIzquierda:
+                if(probabilidadContinuarRotura >= Random.Range(0, 1f))
+                {
+                    tipoNuevaPista = TipoPista.RectaRotaIzquierda;
+                }
+                else
+                {
+                    tipoNuevaPista = TipoPista.RectaRotaFinIzquierda;
+                }
+                break;
+            default:
+                tipoNuevaPista = TipoPista.Recta;
+                if(contadorInterseccion >= pistasMinimasInterseccion)
+                {
+                    if(probabilidadInterseccion >= Random.Range(0, 1f))
+                    {
+                        switch(Random.Range(0,1f))
+                        {
+                            case > 0.90f:
+                                tipoNuevaPista = TipoPista.InterCruz;
+                                break;
+                            case > 0.80f:
+                                tipoNuevaPista = TipoPista.InterLDerecha;
+                                break;
+                            case > 0.70f:
+                                tipoNuevaPista = TipoPista.InterLIzquierda;
+                                break;
+                            case > 0.60f:
+                                tipoNuevaPista = TipoPista.InterDerecha;
+                                break;
+                            case > 0.50f:
+                                tipoNuevaPista = TipoPista.InterIzquierda;
+                                break;
+                            default:
+                                tipoNuevaPista = TipoPista.InterT;
+                                break;
+                        }
+                    }
+                }
+                else if(probabilidadDePistaRota >= Random.Range(0,1f))
+                {
+                    switch(Random.Range(0,1f))
+                    {
+                        case >= 0.5f:
+                            tipoNuevaPista = TipoPista.RectaRotaInicioIzquierda;
+                            break;
+                        default:
+                            tipoNuevaPista = TipoPista.RectaRotaInicioDerecha;
+                            break;
+                    }
+                }
+                break;
         }
-
-        TipoPista tipoNuevaPista = TipoPista.Recta;
-
-        // if(contadorInterseccion >= pistasMinimasInterseccion)
-        // {
-        //     if(probabilidadInterseccion <= Random.Range(0, 1f))
-        //     {
-        //         switch(Random.Range(0,1f))
-        //         {
-        //             case > 0.90f:
-        //                 tipoNuevaPista = TipoPista.InterCruz;
-        //                 break;
-        //             case > 0.80f:
-        //                 tipoNuevaPista = TipoPista.InterLDerecha;
-        //                 break;
-        //             case > 0.70f:
-        //                 tipoNuevaPista = TipoPista.InterLIzquierda;
-        //                 break;
-        //             case > 0.60f:
-        //                 tipoNuevaPista = TipoPista.InterDerecha;
-        //                 break;
-        //             case > 0.50f:
-        //                 tipoNuevaPista = TipoPista.InterIzquierda;
-        //                 break;
-        //             case > 0.40f:
-        //                 tipoNuevaPista = TipoPista.InterT;
-        //                 break;
-        //         }
-        //     }
-        // }
 
         GameObject nuevaPista = ObtenerPistaDesactivada(tipoNuevaPista);
         SpawnearPista(nuevaPista, ejePrincipal, ultimaPista.transform.position + (scriptUltimaPista.Longitud / 2) * ejePrincipal.Vectorizado);
@@ -160,8 +201,8 @@ public class PistaManager : MonoBehaviour
 
         //Se agrega una pista al final, pero se pobla la anterior, porque hace falta saber el tipo de la pista siguiente
         //para poner bien los obstaculos.
-        obstaculoManager.SpawnearObstaculos(sendaPrincipal[sendaPrincipal.Count - 3], sendaPrincipal[sendaPrincipal.Count - 2], sendaPrincipal[sendaPrincipal.Count - 1]);
-        monedaManager.SpawnearMonedas(sendaPrincipal[sendaPrincipal.Count - 2], null);
+        //obstaculoManager.SpawnearObstaculos(sendaPrincipal[sendaPrincipal.Count - 3], sendaPrincipal[sendaPrincipal.Count - 2], sendaPrincipal[sendaPrincipal.Count - 1]);
+        //monedaManager.SpawnearMonedas(sendaPrincipal[sendaPrincipal.Count - 2], null);
     }
 
     //Agrega pistas a las ramas de una pista base.
@@ -202,19 +243,19 @@ public class PistaManager : MonoBehaviour
 
     private GameObject SpawnearPista(GameObject pistaASpawnear, Eje ejeOrientador, Vector3 puntoInicio)
     {
-        BehaviourPista scripPistaASpawnear = pistaASpawnear.GetComponent<BehaviourPista>();
+        BehaviourPista scriptPistaASpawnear = pistaASpawnear.GetComponent<BehaviourPista>();
 
-        scripPistaASpawnear.ReiniciarEje();
-        scripPistaASpawnear.PistaManager = this;
-        pistaASpawnear.transform.position = puntoInicio + (scripPistaASpawnear.Longitud / 2) * ejeOrientador.Vectorizado;
+        scriptPistaASpawnear.ReiniciarEje();
+        scriptPistaASpawnear.PistaManager = this;
+        pistaASpawnear.transform.position = puntoInicio + (scriptPistaASpawnear.Longitud / 2) * ejeOrientador.Vectorizado;
         pistaASpawnear.SetActive(true);
 
         //Rotar pista según su eje y el eje orientador.
-        float anguloRotacion = scripPistaASpawnear.EjeMovimiento.AngulosA(ejeOrientador);
-        pistaASpawnear.transform.Rotate(0,anguloRotacion, 0);
-        scripPistaASpawnear.EjeMovimiento = new Eje(ejeOrientador.Direccion, ejeOrientador.Sentido);
+        float anguloRotacion = scriptPistaASpawnear.EjeMovimiento.AngulosA(ejeOrientador);
+        pistaASpawnear.transform.Rotate(0,anguloRotacion, 0, Space.World);
+        scriptPistaASpawnear.EjeMovimiento = new Eje(ejeOrientador.Direccion, ejeOrientador.Sentido);
 
-        switch(scripPistaASpawnear.Tipo)
+        switch(scriptPistaASpawnear.Tipo)
         {
             case TipoPista.InterIzquierda:
             case TipoPista.InterDerecha:

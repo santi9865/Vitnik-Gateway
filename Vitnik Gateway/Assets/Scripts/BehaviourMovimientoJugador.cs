@@ -108,7 +108,7 @@ public class BehaviourMovimientoJugador : MonoBehaviour
                 }
             }
 
-            if(Input.GetKeyDown(KeyCode.RightArrow))
+            if(Input.GetKey(KeyCode.RightArrow))
             {
                 if(!doblando && !cambiandoCarril && !deslizando && !saltando && puedeDoblarDerecha)
                 {
@@ -215,7 +215,7 @@ public class BehaviourMovimientoJugador : MonoBehaviour
     {
         float interpolador;
 
-        interpolador = Mathf.Clamp(Mathf.Sqrt(timerCambioCarril / tiempoMaximoCambioCarril), 0, 1);
+        interpolador = Mathf.Clamp(Mathf.Sqrt(timerCambioCarril / tiempoMaximoCambioCarril), 0.1F, 1);
 
         // float valorMedio = ((2 / tiempoMaximoCambioCarril) * Mathf.Pow(0.5F,3)) * (timerCambioCarril) - Mathf.Pow(0.5F,3);
         // if(valorMedio < 0)
@@ -325,13 +325,15 @@ public class BehaviourMovimientoJugador : MonoBehaviour
         gameObject.transform.position = Vector3.Scale(carrilDestino.Posicion.transform.position, ramaDisponible.EjeMovimiento.VectorAxisPerpendicular)
         + Vector3.Scale(gameObject.transform.position, ramaDisponible.EjeMovimiento.VectorAxisParalelo + Orientacion);
 
-        gameObject.transform.Rotate(0, 90, 0);
+        gameObject.transform.Rotate(0, 90, 0, Space.World);
 
         EjeMovimiento.GirarDerecha();
 
         GameManager.Instancia.JugadorDobloDerecha(ramaDisponible.PistaPadre, ramaDisponible);
 
         doblando = false;
+
+        Debug.Log("Jugador doblo derecha");
     }
 
     private void DoblarIzquierda()
@@ -349,20 +351,24 @@ public class BehaviourMovimientoJugador : MonoBehaviour
         gameObject.transform.position = Vector3.Scale(carrilDestino.Posicion.transform.position, ramaDisponible.EjeMovimiento.VectorAxisPerpendicular)
         + Vector3.Scale(gameObject.transform.position, ramaDisponible.EjeMovimiento.VectorAxisParalelo + Orientacion);
 
-        gameObject.transform.Rotate(0, -90, 0);
+        gameObject.transform.Rotate(0, -90, 0, Space.World);
 
         EjeMovimiento.GirarIzquierda();
 
         GameManager.Instancia.JugadorDobloIzquierda(ramaDisponible.PistaPadre, ramaDisponible);
 
         doblando = false;
+
+        Debug.Log("Jugador doblo izquierda");
     }
 
     private Carril EncontrarCarrilMasCercanoEnRamaDisponible()
     {
-        Carril carrilMasCercano = ramaDisponible.GetComponentInChildren<BehaviourListaCarriles>().Carriles[0];
+        List<Carril> carrilesRamaDisponible = ramaDisponible.GetComponentInChildren<BehaviourListaCarriles>().Carriles;
 
-        float distanciaMinima = 0;
+        Carril carrilMasCercano = carrilesRamaDisponible[0];
+
+        float distanciaMinima = Mathf.Abs(Vector3.Dot(carrilesRamaDisponible[0].Posicion.transform.position - gameObject.transform.position, EjeMovimiento.Vectorizado));
         foreach(Carril carril in ramaDisponible.GetComponentInChildren<BehaviourListaCarriles>().Carriles)
         {
             float distancia =  Mathf.Abs(Vector3.Dot(carril.Posicion.transform.position - gameObject.transform.position, EjeMovimiento.Vectorizado));
@@ -372,6 +378,21 @@ public class BehaviourMovimientoJugador : MonoBehaviour
                 distanciaMinima = distancia;
                 carrilMasCercano = carril;
             }
+        }
+
+        carriles = ramaDisponible.gameObject.GetComponentInChildren<BehaviourListaCarriles>().Carriles;
+
+        switch(carrilMasCercano.Tipo)
+        {
+            case TipoCarril.Izquierdo:
+                carrilActual = 0;
+                break;
+            case TipoCarril.Central:
+                carrilActual = 1;
+                break;
+            case TipoCarril.Derecho:
+                carrilActual = 2;
+                break;
         }
 
         return carrilMasCercano;
@@ -403,7 +424,7 @@ public class BehaviourMovimientoJugador : MonoBehaviour
 
     private void MoverseHaciaAdelante()
     {
-        gameObject.transform.Translate(EjeMovimiento.Vectorizado * velocidad * Time.deltaTime);
+        gameObject.transform.Translate(EjeMovimiento.Vectorizado * velocidad * Time.deltaTime, Space.World);
 
         GameManager.Instancia.AddDistancia(Vector3.Dot(gameObject.transform.position, EjeMovimiento.Vectorizado) - Vector3.Dot(posicionAnterior, EjeMovimiento.Vectorizado));
         posicionAnterior = gameObject.transform.position;
