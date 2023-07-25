@@ -3470,7 +3470,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1177959772}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.35, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4763,7 +4763,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   velocidad: 6.33
-  distanciaMaximaSalto: 4
+  distanciaMaximaSalto: 5
   distanciaMaximaDesliz: 4
   alturaBase: 0.9
   alturaMaxima: 1.5
@@ -6488,6 +6488,7 @@ MonoBehaviour:
   pistasMinimasInterseccion: 3
   probabilidadInterseccion: 0.5
   pistasPorRama: 3
+  pistasDeGraciaInterseccion: 0
   estelaDePistas: 3
   probabilidadDePistaRota: 1
   probabilidadContinuarRotura: 0.5
@@ -6513,7 +6514,7 @@ MonoBehaviour:
   distanciaPistaAnterior: 5
   margenDeManiobra: 1
   probabilidadSpawnMultiple: 0.3
-  posicionUltimoGrupo: {x: 0, y: 0, z: 60}
+  posicionUltimoGrupo: {x: 0, y: 0, z: 85.62441}
   prefabObstaculo: {fileID: 3558656423110874392, guid: a61f40b8354243945a81c2b1e6584798,
     type: 3}
   "tama\xF1oPool": 20
@@ -6526,7 +6527,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2108169938}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3b57dcf10fc60d7429edaf4d50021e46, type: 3}
   m_Name: 

@@ -193,7 +193,7 @@ public class MonedaManager : MonoBehaviour
                 {
                     distanciaGrupoActualAlSiguienteGrupo = Vector3.Dot(grupos[grupoActual].Posicion - grupos[grupoActual + 1].Posicion, scriptPista.EjeMovimiento.Vectorizado);
 
-                    lugarActual = grupos[grupoActual + 1].DevolverLugarLibreAleatorio();
+                    lugarActual = grupos[grupoActual + 1].DevolverLugarLibreAleatorioHabilitado();
 
                     grupoActual++;
                     grupoActualAtravesado = false;

@@ -246,6 +246,13 @@ public class BehaviourMovimientoJugador : MonoBehaviour
     {
         if (carrilActual < carriles.Count - 1)
         {
+
+            //Si el carril al que quiere ir no está habilitado, entonces no cambia de carril.
+            if(!carriles[carrilActual + 1].Habilitado)
+            {
+                return;
+            }
+
             carrilInicial = carriles[carrilActual].Posicion.transform.position;
             carrilFinal = carriles[carrilActual + 1].Posicion.transform.position;
 
@@ -262,6 +269,12 @@ public class BehaviourMovimientoJugador : MonoBehaviour
     {
         if (carrilActual > 0)
         {
+            //Si el carril al que quiere ir no está habilitado, entonces no cambia de carril.
+            if(!carriles[carrilActual - 1].Habilitado)
+            {
+                return;
+            }
+
             carrilInicial = carriles[carrilActual].Posicion.transform.position;
             carrilFinal = carriles[carrilActual - 1].Posicion.transform.position;
 

@@ -9,6 +9,9 @@ public class PistaManager : MonoBehaviour
     [SerializeField] private float probabilidadInterseccion;
     [SerializeField] private int pistasPorRama;
 
+    //Cuantas pistas va a haber sin obstáculos desde el comienzo de una ramificacion.
+    [SerializeField] private int pistasDeGraciaInterseccion;
+
     //Que pista de la lista debería pasarse antes de borrar la última.
     [SerializeField] private int estelaDePistas;
 
@@ -25,6 +28,8 @@ public class PistaManager : MonoBehaviour
     private Eje ejePrincipal;
     private ObstaculoManager obstaculoManager;
     private MonedaManager monedaManager;
+
+    private int contadorPistasRecorridas = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -180,7 +185,7 @@ public class PistaManager : MonoBehaviour
                         }
                     }
                 }
-                else if(probabilidadDePistaRota >= Random.Range(0,1f))
+                else if(probabilidadDePistaRota >= Random.Range(0, 1f))
                 {
                     switch(Random.Range(0,1f))
                     {
@@ -201,8 +206,17 @@ public class PistaManager : MonoBehaviour
 
         //Se agrega una pista al final, pero se pobla la anterior, porque hace falta saber el tipo de la pista siguiente
         //para poner bien los obstaculos.
-        //obstaculoManager.SpawnearObstaculos(sendaPrincipal[sendaPrincipal.Count - 3], sendaPrincipal[sendaPrincipal.Count - 2], sendaPrincipal[sendaPrincipal.Count - 1]);
-        //monedaManager.SpawnearMonedas(sendaPrincipal[sendaPrincipal.Count - 2], null);
+
+        GameObject penultimaPista = null;
+
+        if(sendaPrincipal.Count > 2)
+        {
+            penultimaPista = sendaPrincipal[sendaPrincipal.Count - 3];
+        }
+
+        obstaculoManager.SpawnearObstaculos(penultimaPista, ultimaPista, nuevaPista);
+        //monedaManager.SpawnearMonedas(ultimaPista, null);
+
     }
 
     //Agrega pistas a las ramas de una pista base.

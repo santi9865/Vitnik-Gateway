@@ -18,7 +18,7 @@ public class BehaviourPista : MonoBehaviour
     [SerializeField] private GameObject ramaIzquierda;
     public GameObject RamaIzquierda {get => ramaIzquierda;}
 
-    public Eje EjeMovimiento;
+    public Eje EjeMovimiento = new Eje(EjeDireccion.Z, EjeSentido.Positivo);
     public List<GrupoObstaculos> gruposObstaculos;
     public List<GameObject> monedas;
 
@@ -29,7 +29,7 @@ public class BehaviourPista : MonoBehaviour
 
     void Start()
     {
-
+        
     }
 
     public void ReiniciarEje()

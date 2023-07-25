@@ -99,12 +99,20 @@ public class ObstaculoManager : MonoBehaviour
     // Tambien convierte las distancias a múltiplos de la unidad.
     private void VerificarDistancias()
     {
+        //Distancia más grande que puede recorrer el jugador si se desliza, salta o cambia de carril.
         float distanciaMaxima = Mathf.Max(scriptJugador.DistanciaDesliz, scriptJugador.DistanciaSalto, scriptJugador.DistanciaCambioCarril);
 
+        //La distancia a la cual se debe considerar la pista siguiente debe ser mayor a la distancia más grande que puede recorrer
+        //el jugador con alguna acción. A fines prácticos se le suma un valor que sirve como acolchado para dejar un tiempo prudente
+        //de reacción.
         distanciaPistaSiguiente = TechoEnUnidad(Mathf.Max(distanciaMaxima + margenDeManiobra, distanciaPistaSiguiente));
 
+        //Lo mismo se hace con la pista Anterior.
         distanciaPistaAnterior = TechoEnUnidad(Mathf.Max(distanciaMaxima + margenDeManiobra, distanciaPistaAnterior));
 
+        //Se convierte a la varianza de la posición en un múltiplo de la unidad elegida para reflejar mejor los valores posibles
+        //Como los grupos de obstáculos se ponen en múltiplos de la unidad elegida si la varianza no es un múltiplo entonces
+        //el valor es engañoso porque nunca va a haber un obstáculo posicionado con la varianza máxima o mínima.
         varianzaPosicion = TechoEnUnidad(varianzaPosicion);
 
         //La distancia entre obstáculos debe ser capaz de permitirle al jugador hacer como mínimo la acción más larga una vez
@@ -115,6 +123,8 @@ public class ObstaculoManager : MonoBehaviour
         //     distancia = distanciaMaxima + scriptJugador.DistanciaCambioCarril * 2 + margenDeManiobra * 3 + varianzaPosicion;
         // }
 
+        //Al igual que con la varianza, la distancia entre los grupos de obstáculos es un múltiplo de la unidad
+        //Por lo tanto, la distancia entre dichos grupos debe ser un múltiplo para reflejar mejor los valores posibles.
         distancia = TechoEnUnidad(distancia);
     }
 
@@ -163,9 +173,12 @@ public class ObstaculoManager : MonoBehaviour
     {
         VerificarDistancias();
 
-        BehaviourPista scriptPistaAnterior = pistaAnterior.GetComponentInChildren<BehaviourPista>();
+        if(pista == null)
+        {
+            return;
+        }
+
         BehaviourPista scriptPista = pista.GetComponentInChildren<BehaviourPista>();
-        BehaviourPista scriptSiguientePista = pistaSiguiente.GetComponentInChildren<BehaviourPista>();
 
         List<GrupoObstaculos> gruposObstaculos = new List<GrupoObstaculos>();
 
@@ -173,40 +186,57 @@ public class ObstaculoManager : MonoBehaviour
 
         float margenAleatorio = PisoEnUnidad(Random.Range(-varianzaPosicion, varianzaPosicion));
 
+        //Este while calcula la distancia del último grupo de obstáculos spawneado con la posición del final de la pista considerada.
         while(Vector3.Dot(pista.transform.position + (scriptPista.Longitud / 2) * scriptPista.EjeMovimiento.Vectorizado - 
         posicionUltimoGrupo, scriptPista.EjeMovimiento.Vectorizado) > distancia + margenAleatorio)
         {
             Vector3 posicionNuevoGrupo = posicionUltimoGrupo + scriptJugador.EjeMovimiento.Vectorizado * (distancia + margenAleatorio);
-            GrupoObstaculos nuevoGrupo = new GrupoObstaculos(posicionNuevoGrupo, new List<LugarObstaculo>(), new List<Carril>());
+            
+            //Se analiza si considerar los carriles de la pista siguiente o anterior para el posicionamiento de obstáculos
+            //en carriles habilitados según la distancia del grupo a dichas pistas.
 
-            //Distancia del grupo al comienzo de la pista siguiente.
+            List<Carril> carrilesAConsiderar = null;
 
-            float distanciaGrupoPistaSiguiente = Vector3.Dot(pistaSiguiente.transform.position - posicionNuevoGrupo, scriptJugador.EjeMovimiento.Vectorizado)
-            - scriptSiguientePista.Longitud / 2;
+            if(pistaSiguiente != null)
+            {   
+                BehaviourPista scriptSiguientePista = pistaSiguiente.GetComponentInChildren<BehaviourPista>();
 
-            float distanciaGrupoPistaAnterior = Vector3.Dot(posicionNuevoGrupo - pistaAnterior.transform.position, scriptJugador.EjeMovimiento.Vectorizado)
-            - scriptPistaAnterior.Longitud / 2;
+                //Distancia del grupo de obstáculos al comienzo de la pista siguiente.
+
+                float distanciaGrupoPistaSiguiente = Vector3.Dot(pistaSiguiente.transform.position - posicionNuevoGrupo, scriptJugador.EjeMovimiento.Vectorizado)
+                - scriptSiguientePista.Longitud / 2;
+
+                if(distanciaGrupoPistaSiguiente < distanciaPistaSiguiente)
+                {
+                    carrilesAConsiderar = pistaSiguiente.GetComponentInChildren<BehaviourListaCarriles>().Carriles;
+                }
+            }
+            else if(pistaAnterior != null)
+            {
+                BehaviourPista scriptPistaAnterior = pistaAnterior.GetComponentInChildren<BehaviourPista>();
+
+                //Distancia del grupo al final de la pista anterior
+
+                float distanciaGrupoPistaAnterior = Vector3.Dot(posicionNuevoGrupo - pistaAnterior.transform.position, scriptJugador.EjeMovimiento.Vectorizado)
+                - scriptPistaAnterior.Longitud / 2;
+
+                if(distanciaGrupoPistaAnterior < distanciaPistaAnterior)
+                {
+                    carrilesAConsiderar = pistaAnterior.GetComponentInChildren<BehaviourListaCarriles>().Carriles;
+                }
+            }
 
             // float distanciaGrupoPistaSiguiente = Mathf.Abs(-Vector3.Dot(posicionNuevoGrupo, scriptJugador.EjeMovimiento.Vectorizado) 
             // + Vector3.Dot(pistaSiguiente.transform.position, scriptJugador.EjeMovimiento.Vectorizado)) - scriptSiguientePista.Longitud / 2;
-            //Distancia del grupo al final de la pista anterior
+
             // float distanciaGrupoPistaAnterior = Mathf.Abs(Vector3.Dot(posicionNuevoGrupo, scriptJugador.EjeMovimiento.Vectorizado) 
             // - Vector3.Dot(pistaAnterior.transform.position, scriptJugador.EjeMovimiento.Vectorizado)) - scriptPistaAnterior.Longitud / 2;
 
-            List<Carril> carrilesPista = pista.GetComponentInChildren<BehaviourListaCarriles>().Carriles;
+            //Los obstáculos siempre se ponen relativos a la posicón de los carriles de la pista central ingresada como argumento.
 
-            if(distanciaGrupoPistaSiguiente < distanciaPistaSiguiente)
-            {
-                nuevoGrupo.Carriles = pistaSiguiente.GetComponentInChildren<BehaviourListaCarriles>().Carriles;
-            }
-            else if(distanciaGrupoPistaAnterior < distanciaPistaAnterior)
-            {
-                nuevoGrupo.Carriles = pistaAnterior.GetComponentInChildren<BehaviourListaCarriles>().Carriles;
-            }
-            else
-            {
-                nuevoGrupo.Carriles = carrilesPista;
-            }
+            GrupoObstaculos nuevoGrupo = new GrupoObstaculos(posicionNuevoGrupo, new List<LugarObstaculo>(), pista.GetComponentInChildren<BehaviourListaCarriles>().Carriles, carrilesAConsiderar);
+
+            //Llena el grupo de obstáculos de lugares según la cantidad de carriles.
 
             for(int i = 0; i < nuevoGrupo.Carriles.Count * 2; i++)
             {
@@ -226,7 +256,7 @@ public class ObstaculoManager : MonoBehaviour
                 nuevoGrupo.Lugares.Add(nuevoLugar);
             }
 
-            LugarObstaculo lugarLibreAleatorio = nuevoGrupo.DevolverLugarLibreAleatorio();
+            LugarObstaculo lugarLibreAleatorio =  nuevoGrupo.DevolverLugarLibreAleatorioHabilitado(); 
 
             if(ObtenerObstaculoDesactivado() == null)
             {
@@ -239,13 +269,26 @@ public class ObstaculoManager : MonoBehaviour
 
             lugarLibreAleatorio.Obstaculo.SetActive(true);
             
-            for(int i = 0; i < nuevoGrupo.Lugares.Count - 1; i++)
+            int cantidadLugaresLibres = 0;
+
+            foreach(LugarObstaculo lugar in nuevoGrupo.Lugares)
+            {
+                Carril scriptCarril = nuevoGrupo.Carriles[lugar.Carril];
+
+                if(scriptCarril.Habilitado && lugar.Libre)
+                {
+                    cantidadLugaresLibres++;
+                }
+            }
+
+
+            for(int i = 0; i < nuevoGrupo.CantidadLugaresLibresHabilitados - 1; i++)
             {
                 numeroRandom = Random.Range(0f,1f);
 
                 if(numeroRandom < probabilidadSpawnMultiple)
                 {
-                    lugarLibreAleatorio = nuevoGrupo.DevolverLugarLibreAleatorio();
+                    lugarLibreAleatorio = nuevoGrupo.DevolverLugarLibreAleatorioHabilitado();
 
                     if(ObtenerObstaculoDesactivado() == null)
                     {

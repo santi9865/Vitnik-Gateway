@@ -53,7 +53,10 @@ public class LugarObstaculo
 
     public void ReiniciarObstaculo()
     {
-        Obstaculo.transform.rotation = rotacionInicialObstaculo;
+        if(Obstaculo != null)
+        {
+            Obstaculo.transform.rotation = rotacionInicialObstaculo;
+        }
     }
 
     public void RotarObstaculo(float anguloY)
