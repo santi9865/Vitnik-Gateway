@@ -6490,7 +6490,8 @@ MonoBehaviour:
   pistasPorRama: 3
   pistasDeGraciaInterseccion: 0
   estelaDePistas: 3
-  probabilidadDePistaRota: 1
+  pistasMinimasRotura: 3
+  probabilidadDePistaRota: 0.5
   probabilidadContinuarRotura: 0.5
   pistaFactory: {fileID: 2108169944}
 --- !u!114 &2108169942

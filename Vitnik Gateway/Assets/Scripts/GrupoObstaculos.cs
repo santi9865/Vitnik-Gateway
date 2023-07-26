@@ -40,6 +40,7 @@ public class GrupoObstaculos
             foreach(LugarObstaculo lugar in Lugares)
             {
                 Carril scriptCarril = Carriles[lugar.Carril];
+                
                 Carril scriptCarrilAConsiderar = _carrilesAConsiderar[lugar.Carril];
 
                 if(scriptCarril.Habilitado && lugar.Libre && scriptCarrilAConsiderar.Habilitado)

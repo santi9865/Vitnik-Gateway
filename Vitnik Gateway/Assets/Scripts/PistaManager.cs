@@ -5,7 +5,9 @@ using UnityEngine;
 public class PistaManager : MonoBehaviour
 {
     [SerializeField] private List<GameObject> pistas;
+    //Cantidad de pistas que no sean intersecciones que deben spawnear antes de que sea posible spawnear una pista de intersección.
     [SerializeField] private int pistasMinimasInterseccion;
+    //Probailidad de que se spawnee una pista de intersección una vez que se cumpla con el mínimo de pistas no intersecciones.
     [SerializeField] private float probabilidadInterseccion;
     [SerializeField] private int pistasPorRama;
 
@@ -14,13 +16,17 @@ public class PistaManager : MonoBehaviour
 
     //Que pista de la lista debería pasarse antes de borrar la última.
     [SerializeField] private int estelaDePistas;
+    //Cantidad mínima de pistas no rotas que deben spawnear antes de que sea posible spawnear una pista rota.
+    [SerializeField] private int pistasMinimasRotura;
 
     //Probabilidad de que spawnee una pista rota de inicio.
     [SerializeField] private float probabilidadDePistaRota;
-    //Probabilidad de que la rotura spawnee otra pista rota.
+    //Probabilidad de que la rotura spawnee otra pista rota despues de otra pista rota.
     [SerializeField] private float probabilidadContinuarRotura;
     //Cuenta la cantidad de pistas que han transcurrido desde la última intersección.
-    private float contadorInterseccion;
+    private float contadorInterseccion = 0;
+    //Cuenta la cantidad de pistas que han transcurrido desde la última pista rota.
+    private float contadorRotura = 0;
 
     [SerializeField] private PistaFactory pistaFactory;
 
@@ -179,24 +185,34 @@ public class PistaManager : MonoBehaviour
                             case > 0.50f:
                                 tipoNuevaPista = TipoPista.InterIzquierda;
                                 break;
+                            case > 0.40F:
+                                tipoNuevaPista = TipoPista.InterLDerecha;
+                                break;
+                            case > 0.30F:
+                                tipoNuevaPista = TipoPista.InterLIzquierda;
+                                break;
                             default:
                                 tipoNuevaPista = TipoPista.InterT;
                                 break;
                         }
                     }
                 }
-                else if(probabilidadDePistaRota >= Random.Range(0, 1f))
+                if(contadorRotura >= pistasMinimasRotura)
                 {
-                    switch(Random.Range(0,1f))
+                    if(probabilidadDePistaRota >= Random.Range(0, 1f))
                     {
-                        case >= 0.5f:
-                            tipoNuevaPista = TipoPista.RectaRotaInicioIzquierda;
-                            break;
-                        default:
-                            tipoNuevaPista = TipoPista.RectaRotaInicioDerecha;
-                            break;
+                        switch(Random.Range(0,1f))
+                        {
+                            case >= 0.5f:
+                                tipoNuevaPista = TipoPista.RectaRotaInicioIzquierda;
+                                break;
+                            default:
+                                tipoNuevaPista = TipoPista.RectaRotaInicioDerecha;
+                                break;
+                        }
                     }
                 }
+
                 break;
         }
 
@@ -227,9 +243,7 @@ public class PistaManager : MonoBehaviour
                 break;
         }
 
-
         //monedaManager.SpawnearMonedas(ultimaPista, null);
-
     }
 
     //Agrega pistas a las ramas de una pista base.
@@ -292,9 +306,20 @@ public class PistaManager : MonoBehaviour
             case TipoPista.InterCruz:
                 PoblarRamas(pistaASpawnear);
                 contadorInterseccion = 0;
+                contadorRotura++;
+                break;
+            case TipoPista.RectaRotaDerecha:
+            case TipoPista.RectaRotaIzquierda:
+            case TipoPista.RectaRotaInicioDerecha:
+            case TipoPista.RectaRotaInicioIzquierda:
+            case TipoPista.RectaRotaFinDerecha:
+            case TipoPista.RectaRotaFinIzquierda:
+                contadorRotura = 0;
+                contadorInterseccion++;
                 break;
             default:
                 contadorInterseccion++;
+                contadorRotura++;
                 break;
         }
 
