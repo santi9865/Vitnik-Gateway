@@ -207,14 +207,27 @@ public class PistaManager : MonoBehaviour
         //Se agrega una pista al final, pero se pobla la anterior, porque hace falta saber el tipo de la pista siguiente
         //para poner bien los obstaculos.
 
-        GameObject penultimaPista = null;
-
-        if(sendaPrincipal.Count > 2)
+        switch(scriptUltimaPista.Tipo)
         {
-            penultimaPista = sendaPrincipal[sendaPrincipal.Count - 3];
+            case TipoPista.Recta:
+            case TipoPista.RectaRotaDerecha:
+            case TipoPista.RectaRotaIzquierda:
+            case TipoPista.RectaRotaInicioDerecha:
+            case TipoPista.RectaRotaInicioIzquierda:
+            case TipoPista.RectaRotaFinDerecha:
+            case TipoPista.RectaRotaFinIzquierda:
+                GameObject penultimaPista = null;
+
+                if(sendaPrincipal.Count > 2)
+                {
+                    penultimaPista = sendaPrincipal[sendaPrincipal.Count - 3];
+                }
+
+                obstaculoManager.SpawnearObstaculos(penultimaPista, ultimaPista, nuevaPista);
+                break;
         }
 
-        obstaculoManager.SpawnearObstaculos(penultimaPista, ultimaPista, nuevaPista);
+
         //monedaManager.SpawnearMonedas(ultimaPista, null);
 
     }

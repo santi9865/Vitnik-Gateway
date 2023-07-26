@@ -32,6 +32,8 @@ public class ObstaculoManager : MonoBehaviour
 
     private List<GameObject> poolObstaculos;
 
+    private const float MARGENTECHOYPISO = 0.001F;
+
 
     void Start()
     {
@@ -81,13 +83,27 @@ public class ObstaculoManager : MonoBehaviour
     // Devuelve el múltiplo de la unidad más grande que es menor o igual al valor.
     private float PisoEnUnidad(float valor)
     {
-        return valor - (valor % unidad);
+        if(valor % unidad < MARGENTECHOYPISO)
+        {
+            return valor;
+        }
+        else
+        {
+            return valor - (valor % unidad);
+        }
     }
 
     // Devuelve el múltiplo de la unidad más pequeño que es mayor o igual al valor.
     private float TechoEnUnidad(float valor)
     {
-        return (Mathf.Floor(valor / unidad) + 1) * unidad;
+        if(valor % unidad < MARGENTECHOYPISO)
+        {
+            return valor;
+        }
+        else
+        {
+            return valor + (unidad - valor % unidad);
+        }
     }
 
 
@@ -186,10 +202,19 @@ public class ObstaculoManager : MonoBehaviour
 
         float margenAleatorio = PisoEnUnidad(Random.Range(-varianzaPosicion, varianzaPosicion));
 
+        float distanciaUltimoGrupoAFinalPista = Vector3.Dot(pista.transform.position + (scriptPista.Longitud / 2) * scriptPista.EjeMovimiento.Vectorizado - 
+        posicionUltimoGrupo, scriptPista.EjeMovimiento.Vectorizado);
+
         //Este while calcula la distancia del último grupo de obstáculos spawneado con la posición del final de la pista considerada.
-        while(Vector3.Dot(pista.transform.position + (scriptPista.Longitud / 2) * scriptPista.EjeMovimiento.Vectorizado - 
-        posicionUltimoGrupo, scriptPista.EjeMovimiento.Vectorizado) > distancia + margenAleatorio)
+
+        while(distanciaUltimoGrupoAFinalPista > distancia + margenAleatorio)
         {
+            //Checkea si el último grupo fue spawneado a una distancia mayor a distancia + margenAleatorio
+            if(distanciaUltimoGrupoAFinalPista > scriptPista.Longitud + distancia + margenAleatorio)
+            {
+                posicionUltimoGrupo = pista.transform.position - (scriptPista.Longitud /2 + distancia + margenAleatorio) * scriptPista.EjeMovimiento.Vectorizado;
+            }
+
             Vector3 posicionNuevoGrupo = posicionUltimoGrupo + scriptJugador.EjeMovimiento.Vectorizado * (distancia + margenAleatorio);
             
             //Se analiza si considerar los carriles de la pista siguiente o anterior para el posicionamiento de obstáculos
@@ -281,7 +306,6 @@ public class ObstaculoManager : MonoBehaviour
                 }
             }
 
-
             for(int i = 0; i < nuevoGrupo.CantidadLugaresLibresHabilitados - 1; i++)
             {
                 numeroRandom = Random.Range(0f,1f);
@@ -329,6 +353,9 @@ public class ObstaculoManager : MonoBehaviour
             margenAleatorio = PisoEnUnidad(Random.Range(-varianzaPosicion,varianzaPosicion));
 
             //Debug.Log(distancia + margenAleatorio);
+
+            distanciaUltimoGrupoAFinalPista = Vector3.Dot(pista.transform.position + (scriptPista.Longitud / 2) * scriptPista.EjeMovimiento.Vectorizado - 
+            posicionUltimoGrupo, scriptPista.EjeMovimiento.Vectorizado);
         }
 
         scriptPista.gruposObstaculos = gruposObstaculos;

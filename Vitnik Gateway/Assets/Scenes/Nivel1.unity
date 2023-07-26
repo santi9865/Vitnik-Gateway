@@ -4763,10 +4763,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   velocidad: 6.33
-  distanciaMaximaSalto: 5
-  distanciaMaximaDesliz: 4
+  distanciaMaximaSalto: 5.5
+  distanciaMaximaDesliz: 5.5
   alturaBase: 0.9
-  alturaMaxima: 1.5
+  alturaMaxima: 1.7
   vivo: 1
   puedeDoblarIzquierda: 0
   puedeDoblarDerecha: 0
@@ -6507,7 +6507,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   alturaPrimerPiso: 0
   alturaSegundoPiso: 0.95
-  distancia: 6
+  distancia: 8
   varianzaPosicion: 1
   unidad: 1
   distanciaPistaSiguiente: 5
