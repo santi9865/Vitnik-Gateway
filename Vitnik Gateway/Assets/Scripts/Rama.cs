@@ -31,6 +31,11 @@ public class Rama : MonoBehaviour
 
     public void LimpiarPistas()
     {
+        if(Pistas == null)
+        {
+            return;
+        }
+
         foreach(GameObject pista in Pistas)
         {
             pista.SetActive(false);

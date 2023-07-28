@@ -48,6 +48,7 @@ public class BehaviourPista : MonoBehaviour
             }
 
             gruposObstaculos.Clear();
+            gruposObstaculos = null;
         }
     }
 
@@ -62,6 +63,7 @@ public class BehaviourPista : MonoBehaviour
             }
 
             monedas.Clear();
+            monedas = null;
         }
     }
 

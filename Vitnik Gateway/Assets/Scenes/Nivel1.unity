@@ -6449,6 +6449,7 @@ MonoBehaviour:
   hudManager: {fileID: 225776554}
   statsJugador: {fileID: 1709144128}
   scriptCamara: {fileID: 963194229}
+  monedaManager: {fileID: 2108169943}
 --- !u!4 &2108169940
 Transform:
   m_ObjectHideFlags: 0
@@ -6508,7 +6509,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   alturaPrimerPiso: 0
   alturaSegundoPiso: 0.95
-  distancia: 8
+  distancia: 10
   varianzaPosicion: 1
   unidad: 1
   distanciaPistaSiguiente: 5
@@ -6528,7 +6529,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2108169938}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3b57dcf10fc60d7429edaf4d50021e46, type: 3}
   m_Name: 
@@ -6539,9 +6540,11 @@ MonoBehaviour:
   "tama\xF1oPool": 100
   espaciado: 1
   alturaDesliz: 0.5
+  largoMaximoTirada: 10
+  largoMinimoTirada: 6
+  intervaloTiradas: 10
   scriptJugador: {fileID: 1709144120}
-  carrilInicial: {fileID: 0}
-  ultimaMonedaSpawneada: {fileID: 354413889}
+  posicionUltimaMonedaSpawneada: {x: 0, y: 0, z: 0}
 --- !u!114 &2108169944
 MonoBehaviour:
   m_ObjectHideFlags: 0

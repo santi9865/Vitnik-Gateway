@@ -35,8 +35,6 @@ public class PistaManager : MonoBehaviour
     private ObstaculoManager obstaculoManager;
     private MonedaManager monedaManager;
 
-    private int contadorPistasRecorridas = 0;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -240,10 +238,9 @@ public class PistaManager : MonoBehaviour
                 }
 
                 obstaculoManager.SpawnearObstaculos(penultimaPista, ultimaPista, nuevaPista);
+                monedaManager.SpawnearMonedas(ultimaPista, Vector3.zero, false);
                 break;
         }
-
-        //monedaManager.SpawnearMonedas(ultimaPista, null);
     }
 
     //Agrega pistas a las ramas de una pista base.

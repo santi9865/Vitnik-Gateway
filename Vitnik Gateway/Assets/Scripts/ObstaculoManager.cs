@@ -118,13 +118,13 @@ public class ObstaculoManager : MonoBehaviour
         //Distancia más grande que puede recorrer el jugador si se desliza, salta o cambia de carril.
         float distanciaMaxima = Mathf.Max(scriptJugador.DistanciaDesliz, scriptJugador.DistanciaSalto, scriptJugador.DistanciaCambioCarril);
 
-        //La distancia a la cual se debe considerar la pista siguiente debe ser mayor a la distancia más grande que puede recorrer
-        //el jugador con alguna acción. A fines prácticos se le suma un valor que sirve como acolchado para dejar un tiempo prudente
+        //La distancia a la cual se debe considerar la pista siguiente debe ser mayor a la mitad de la distancia más grande que puede recorrer
+        //el jugador con alguna acción más cambiar de carril una vez. A fines prácticos se le suma un valor que sirve como acolchado para dejar un tiempo prudente
         //de reacción.
-        distanciaPistaSiguiente = TechoEnUnidad(Mathf.Max(distanciaMaxima + margenDeManiobra, distanciaPistaSiguiente));
+        distanciaPistaSiguiente = TechoEnUnidad(Mathf.Max(distanciaMaxima / 2 + margenDeManiobra + scriptJugador.DistanciaCambioCarril, distanciaPistaSiguiente));
 
         //Lo mismo se hace con la pista Anterior.
-        distanciaPistaAnterior = TechoEnUnidad(Mathf.Max(distanciaMaxima + margenDeManiobra, distanciaPistaAnterior));
+        distanciaPistaAnterior = TechoEnUnidad(Mathf.Max(distanciaMaxima / 2 + margenDeManiobra + scriptJugador.DistanciaCambioCarril, distanciaPistaAnterior));
 
         //Se convierte a la varianza de la posición en un múltiplo de la unidad elegida para reflejar mejor los valores posibles
         //Como los grupos de obstáculos se ponen en múltiplos de la unidad elegida si la varianza no es un múltiplo entonces
@@ -132,12 +132,12 @@ public class ObstaculoManager : MonoBehaviour
         varianzaPosicion = TechoEnUnidad(varianzaPosicion);
 
         //La distancia entre obstáculos debe ser capaz de permitirle al jugador hacer como mínimo la acción más larga una vez
-        // y cambiar de carril dos veces. Cada una de estas acciones debe también permitir al jugador tiempo para pensar.
-        // if(distancia - varianzaPosicion < distanciaMaxima + scriptJugador.DistanciaCambioCarril * 2 + margenDeManiobra * 3)
-        // {
-        //     Debug.Log("Distancia mínima entre obstáculos muy pequeña; adaptando distancia mínima.");
-        //     distancia = distanciaMaxima + scriptJugador.DistanciaCambioCarril * 2 + margenDeManiobra * 3 + varianzaPosicion;
-        // }
+        // y cambiar de carril dos veces. También se agrega un poco de tiempo para pensar.
+        if(distancia - varianzaPosicion < distanciaMaxima + scriptJugador.DistanciaCambioCarril + margenDeManiobra)
+        {
+            Debug.Log("Distancia mínima entre obstáculos muy pequeña; adaptando distancia mínima.");
+            distancia = distanciaMaxima + scriptJugador.DistanciaCambioCarril + margenDeManiobra + varianzaPosicion;
+        }
 
         //Al igual que con la varianza, la distancia entre los grupos de obstáculos es un múltiplo de la unidad
         //Por lo tanto, la distancia entre dichos grupos debe ser un múltiplo para reflejar mejor los valores posibles.
@@ -250,12 +250,6 @@ public class ObstaculoManager : MonoBehaviour
                     carrilesAConsiderar = pistaAnterior.GetComponentInChildren<BehaviourListaCarriles>().Carriles;
                 }
             }
-
-            // float distanciaGrupoPistaSiguiente = Mathf.Abs(-Vector3.Dot(posicionNuevoGrupo, scriptJugador.EjeMovimiento.Vectorizado) 
-            // + Vector3.Dot(pistaSiguiente.transform.position, scriptJugador.EjeMovimiento.Vectorizado)) - scriptSiguientePista.Longitud / 2;
-
-            // float distanciaGrupoPistaAnterior = Mathf.Abs(Vector3.Dot(posicionNuevoGrupo, scriptJugador.EjeMovimiento.Vectorizado) 
-            // - Vector3.Dot(pistaAnterior.transform.position, scriptJugador.EjeMovimiento.Vectorizado)) - scriptPistaAnterior.Longitud / 2;
 
             //Los obstáculos siempre se ponen relativos a la posicón de los carriles de la pista central ingresada como argumento.
 
