@@ -133,10 +133,10 @@ public class ObstaculoManager : MonoBehaviour
 
         //La distancia entre obstáculos debe ser capaz de permitirle al jugador hacer como mínimo la acción más larga una vez
         // y cambiar de carril dos veces. También se agrega un poco de tiempo para pensar.
-        if(distancia - varianzaPosicion < distanciaMaxima + scriptJugador.DistanciaCambioCarril + margenDeManiobra)
+        if(distancia < distanciaMaxima + scriptJugador.DistanciaCambioCarril * 2 + margenDeManiobra)
         {
             Debug.Log("Distancia mínima entre obstáculos muy pequeña; adaptando distancia mínima.");
-            distancia = distanciaMaxima + scriptJugador.DistanciaCambioCarril + margenDeManiobra + varianzaPosicion;
+            distancia = distanciaMaxima + scriptJugador.DistanciaCambioCarril * 2 + margenDeManiobra;
         }
 
         //Al igual que con la varianza, la distancia entre los grupos de obstáculos es un múltiplo de la unidad
@@ -200,7 +200,7 @@ public class ObstaculoManager : MonoBehaviour
 
         float numeroRandom;
 
-        float margenAleatorio = PisoEnUnidad(Random.Range(-varianzaPosicion, varianzaPosicion));
+        float margenAleatorio = PisoEnUnidad(Random.Range(0, varianzaPosicion));
 
         float distanciaUltimoGrupoAFinalPista = Vector3.Dot(pista.transform.position + (scriptPista.Longitud / 2) * scriptPista.EjeMovimiento.Vectorizado - 
         posicionUltimoGrupo, scriptPista.EjeMovimiento.Vectorizado);

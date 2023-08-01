@@ -66,7 +66,12 @@ public class GrupoObstaculos
     }
 
     public LugarObstaculo DevolverLugarLibreAleatorioHabilitado()
-    {        
+    {
+        if(CantidadLugaresLibresHabilitados == 0)
+        {
+            return null;
+        }
+
         LugarObstaculo[] lugaresLibres = new LugarObstaculo[CantidadLugaresLibresHabilitados];
 
         int contadorArray = 0;
@@ -100,5 +105,76 @@ public class GrupoObstaculos
         }
 
         return lugaresLibres[Random.Range(0, lugaresLibres.Length)];
+    }
+
+    public LugarObstaculo DevolverLugarLibreAleatorioEnCarrilHabilitado(int carril)
+    {
+        int cantidadLugaresLibresEnCarril = 0;
+
+        if(_carrilesAConsiderar != null)
+        {
+            foreach(LugarObstaculo lugar in Lugares)
+            {
+                Carril scriptCarril = Carriles[lugar.Carril];
+                
+                Carril scriptCarrilAConsiderar = _carrilesAConsiderar[lugar.Carril];
+
+                if(scriptCarril.Habilitado && lugar.Libre && scriptCarrilAConsiderar.Habilitado && lugar.Carril == carril)
+                {
+                    cantidadLugaresLibresEnCarril++;
+                }
+            }
+        }
+        else
+        {
+            foreach(LugarObstaculo lugar in Lugares)
+            {
+                Carril scriptCarril = Carriles[lugar.Carril];
+
+                if(scriptCarril.Habilitado && lugar.Libre && lugar.Carril == carril)
+                {
+                    cantidadLugaresLibresEnCarril++;
+                }
+            }
+        }
+
+        if(cantidadLugaresLibresEnCarril == 0)
+        {
+            return null;
+        }
+
+        LugarObstaculo[] lugaresLibresEnCarril = new LugarObstaculo[cantidadLugaresLibresEnCarril];
+
+        int contadorArray = 0;
+
+        if(_carrilesAConsiderar != null)
+        {
+            foreach(LugarObstaculo lugar in Lugares)
+            {
+                Carril scriptCarril = Carriles[lugar.Carril];
+                Carril scriptCarrilAConsiderar = _carrilesAConsiderar[lugar.Carril];
+
+                if(scriptCarril.Habilitado && lugar.Libre && scriptCarrilAConsiderar.Habilitado && lugar.Carril == carril)
+                {
+                    lugaresLibresEnCarril[contadorArray] = lugar;
+                    contadorArray++;
+                }
+            }
+        }
+        else
+        {
+            foreach(LugarObstaculo lugar in Lugares)
+            {
+                Carril scriptCarril = Carriles[lugar.Carril];
+
+                if(scriptCarril.Habilitado && lugar.Libre && lugar.Carril == carril)
+                {
+                    lugaresLibresEnCarril[contadorArray] = lugar;
+                    contadorArray++;
+                }
+            }
+        }
+
+        return lugaresLibresEnCarril[Random.Range(0, lugaresLibresEnCarril.Length)];
     }
 }

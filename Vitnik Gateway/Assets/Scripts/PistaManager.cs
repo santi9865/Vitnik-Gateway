@@ -35,6 +35,8 @@ public class PistaManager : MonoBehaviour
     private ObstaculoManager obstaculoManager;
     private MonedaManager monedaManager;
 
+    private int contadorPistas = 8;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -287,6 +289,8 @@ public class PistaManager : MonoBehaviour
         scriptPistaASpawnear.PistaManager = this;
         pistaASpawnear.transform.position = puntoInicio + (scriptPistaASpawnear.Longitud / 2) * ejeOrientador.Vectorizado;
         pistaASpawnear.SetActive(true);
+        pistaASpawnear.name = "pista " + contadorPistas;
+        contadorPistas ++;
 
         //Rotar pista según su eje y el eje orientador.
         float anguloRotacion = scriptPistaASpawnear.EjeMovimiento.AngulosA(ejeOrientador);

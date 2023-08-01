@@ -30,8 +30,6 @@ public class MonedaManager : MonoBehaviour
     private List<GameObject> poolMonedas;
 
     private float distanciaSiguienteMonedaAlGrupoActual;
-    private bool grupoActualAtravesado;
-    private bool atravesandoObstaculo;
     private bool continuarTirada;
 
     private bool colocadaPrimerMoneda;
@@ -58,6 +56,7 @@ public class MonedaManager : MonoBehaviour
         grupos = new List<GrupoObstaculos>();
         lugarActual = null;
         colocadaPrimerMoneda = false;
+        continuarTirada = false;
         distanciaMaxima = Mathf.Max(scriptJugador.DistanciaDesliz, scriptJugador.DistanciaSalto, scriptJugador.DistanciaCambioCarril);
     }
 
@@ -131,19 +130,19 @@ public class MonedaManager : MonoBehaviour
         }
     }
 
-    private void Atravesando(Altura altura)
+    private bool Atravesando(Altura altura)
     {
         if(altura == Altura.Arriba && Mathf.Abs(distanciaSiguienteMonedaAlGrupoActual) < (scriptJugador.DistanciaSalto / 2))
         {
-            atravesandoObstaculo = true;
+            return true;
         }
         else if(altura == Altura.Abajo && Mathf.Abs(distanciaSiguienteMonedaAlGrupoActual) < (scriptJugador.DistanciaDesliz / 2))
         {
-            atravesandoObstaculo = true;
+            return true;
         }
         else
         {
-            atravesandoObstaculo = false;
+            return false;
         }
     }
 
@@ -162,11 +161,11 @@ public class MonedaManager : MonoBehaviour
 
     private bool ObstaculoActualAtravesado(Altura altura)
     {
-        if(altura == Altura.Arriba && distanciaSiguienteMonedaAlGrupoActual < -(scriptJugador.DistanciaSalto / 2))
+        if(altura == Altura.Arriba && distanciaSiguienteMonedaAlGrupoActual < -(scriptJugador.DistanciaSalto / 2 + scriptJugador.DistanciaCambioCarril))
         {
             return true;
         }
-        else if(altura == Altura.Abajo && distanciaSiguienteMonedaAlGrupoActual < -(scriptJugador.DistanciaDesliz / 2))
+        else if(altura == Altura.Abajo && distanciaSiguienteMonedaAlGrupoActual < -(scriptJugador.DistanciaDesliz / 2 + scriptJugador.DistanciaCambioCarril))
         {
             return true;
         }
@@ -197,6 +196,8 @@ public class MonedaManager : MonoBehaviour
         {
             grupos.RemoveAt(0);
         }
+
+        Debug.Log("grupos cortados hasta " + hasta + ". nueva cantidad de grupos: " + grupos.Count);
     }
 
     public void JugadorDoblo()
@@ -204,24 +205,31 @@ public class MonedaManager : MonoBehaviour
         colocadaPrimerMoneda = false;
         continuarTirada = false;
         largoTiradaActual = 0;
+        grupos.Clear();
+        lugarActual = null;
     }
 
-    private LugarObstaculo BuscarLugarLibreEnCarril(int carril, List<LugarObstaculo> lugares)
+    private bool CercaniaObstaculoActual(Altura altura)
     {
-        foreach(LugarObstaculo lugar in lugares)
+        if(altura == Altura.Arriba && Mathf.Abs(distanciaSiguienteMonedaAlGrupoActual) < (scriptJugador.DistanciaSalto / 2) + scriptJugador.DistanciaCambioCarril)
         {
-            if(lugar.Carril == carril && lugar.Libre)
-            {
-                return lugar;
-            }
+            return true;
         }
-
-        return null;
+        else if(altura == Altura.Abajo && Mathf.Abs(distanciaSiguienteMonedaAlGrupoActual) < (scriptJugador.DistanciaDesliz / 2) + scriptJugador.DistanciaCambioCarril)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     //Las monedas solamente pueden spawnearse sobre la pista que se provee.
     public void SpawnearMonedas(GameObject pista, Vector3 posicionPrimeraMoneda, bool posicionValida)
     {
+        Debug.Log(pista.name);
+
         BehaviourPista scriptPista = pista.GetComponent<BehaviourPista>();
         List<Carril> carrilesPista = pista.GetComponentInChildren<BehaviourListaCarriles>().Carriles;
 
@@ -233,18 +241,21 @@ public class MonedaManager : MonoBehaviour
 
         Vector3 finalPista = pista.transform.position + (scriptPista.Longitud / 2) * scriptPista.EjeMovimiento.Vectorizado;  
 
+        finalPista -= (distanciaMaxima / 2 + scriptJugador.DistanciaCambioCarril * 2) * scriptPista.EjeMovimiento.Vectorizado;
+
         if(!colocadaPrimerMoneda)
         {
             posicionUltimaMonedaSpawneada = pista.transform.position - (scriptPista.Longitud / 2) * scriptPista.EjeMovimiento.Vectorizado;
             carrilUltimaMoneda = BuscarCarrilHabilitadoAleatorio(carrilesPista);
             colocadaPrimerMoneda = true;
+            continuarTirada = false;
+            lugarActual = null;
         }
 
         if(posicionPrimeraMoneda != null && posicionValida)
         {
             posicionSiguienteMoneda = posicionPrimeraMoneda;
             continuarTirada = true;
-            atravesandoObstaculo = false;
             largoTiradaActual = 0;
 
             if(grupos != null && grupos.Count > 0)
@@ -257,17 +268,6 @@ public class MonedaManager : MonoBehaviour
                 {
                     finalPista = grupos[grupos.Count - 1].Posicion + (distanciaMaxima / 2) * scriptPista.EjeMovimiento.Vectorizado;
                 }
-                else
-                {
-                    finalPista -= (distanciaMaxima / 2 + scriptJugador.DistanciaCambioCarril * 2) * scriptPista.EjeMovimiento.Vectorizado;
-                }
-            }
-            else
-            {
-
-                //Si la pista no tiene ningún grupo de obstáculos entonces se considera el final de la pista como el final real de la pista
-                // menos la mitad de la acción más larga del jugador más 2 cambios de carril.
-                finalPista -= (distanciaMaxima / 2 + scriptJugador.DistanciaCambioCarril * 2) * scriptPista.EjeMovimiento.Vectorizado;
             }
         }
         else
@@ -278,17 +278,33 @@ public class MonedaManager : MonoBehaviour
             {
                 float distanciaASiguienteTirada = intervaloTiradas;
 
+                //Si la siguiente moneda fuera a estar antes de la pista entonces se mueve su posición al comienzo de la pista.
+                if(Vector3.Dot(pista.transform.position - (scriptPista.Longitud / 2) * scriptPista.EjeMovimiento.Vectorizado - posicionSiguienteMoneda, scriptPista.EjeMovimiento.Vectorizado) > 0)
+                {
+                    posicionSiguienteMoneda = pista.transform.position - (scriptPista.Longitud / 2) * scriptPista.EjeMovimiento.Vectorizado;
+
+                    distanciaASiguienteTirada = Vector3.Dot(posicionSiguienteMoneda - posicionUltimaMonedaSpawneada, scriptPista.EjeMovimiento.Vectorizado);
+
+                    Debug.Log("pos ultima moneda spawneada: " + posicionUltimaMonedaSpawneada);
+                    Debug.Log("distancia a siguiente tirada:" + distanciaASiguienteTirada);
+                    Debug.Log("Se actualizo la posición de la siguiente moneda al principio de la pista.");
+                }
+
                 //Como no sabemos la posición del último grupo de obstáculos de la pista anterior entonces se comienza a una distancia igual a la mitad
-                // de la acción mas larga del jugador más dos cambios de carril.
+                // de la acción mas larga del jugador más un cambio de carril.
 
                 float distanciaComienzoTiradaAComienzoPista = Vector3.Dot((pista.transform.position - (scriptPista.Longitud / 2) * scriptPista.EjeMovimiento.Vectorizado) 
                     - (posicionUltimaMonedaSpawneada + distanciaASiguienteTirada * scriptPista.EjeMovimiento.Vectorizado), scriptPista.EjeMovimiento.Vectorizado);
 
                 if(distanciaComienzoTiradaAComienzoPista > -(distanciaMaxima / 2 + scriptJugador.DistanciaCambioCarril))
                 {
-                    distanciaASiguienteTirada = Vector3.Dot((pista.transform.position - (scriptPista.Longitud / 2) * scriptPista.EjeMovimiento.Vectorizado
+                    distanciaASiguienteTirada = Mathf.Abs(Vector3.Dot((pista.transform.position - (scriptPista.Longitud / 2) * scriptPista.EjeMovimiento.Vectorizado
                     + (distanciaMaxima / 2 + scriptJugador.DistanciaCambioCarril) * scriptPista.EjeMovimiento.Vectorizado) 
-                    - posicionUltimaMonedaSpawneada, scriptPista.EjeMovimiento.Vectorizado);
+                    - posicionUltimaMonedaSpawneada, scriptPista.EjeMovimiento.Vectorizado));
+                    
+                    Debug.Log("pos ultima moneda spawneada: " + posicionUltimaMonedaSpawneada);
+                    Debug.Log("distancia a siguiente tirada:" + distanciaASiguienteTirada);
+                    Debug.Log("la siguiente tirada comenzará despues del inicio de la pista más la mitad de la distancia máxima y un cambio de carril.");
                 }
 
                 //Si la tirada fuese a comenzar en el medio del rango de acción de un grupo de obstáculos entonces se corre la
@@ -300,45 +316,32 @@ public class MonedaManager : MonoBehaviour
                     for(int i = 0; i < grupos.Count; i++)
                     {
                         if(Mathf.Abs(Vector3.Dot(grupos[i].Posicion - (posicionUltimaMonedaSpawneada + scriptPista.EjeMovimiento.Vectorizado * distanciaASiguienteTirada)
-                        , scriptPista.EjeMovimiento.Vectorizado)) < distanciaMaxima / 2)
+                        , scriptPista.EjeMovimiento.Vectorizado)) < distanciaMaxima / 2 + scriptJugador.DistanciaCambioCarril)
                         {
-                            distanciaASiguienteTirada = Vector3.Dot((grupos[i].Posicion + (distanciaMaxima / 2 
+                            distanciaASiguienteTirada = Mathf.Abs(Vector3.Dot((grupos[i].Posicion + (distanciaMaxima / 2 
                             + scriptJugador.DistanciaCambioCarril * 2) * scriptPista.EjeMovimiento.Vectorizado) 
-                            - posicionUltimaMonedaSpawneada , scriptPista.EjeMovimiento.Vectorizado);
+                            - posicionUltimaMonedaSpawneada , scriptPista.EjeMovimiento.Vectorizado));
 
                             indiceUltimoGrupoEvaluado = i;
+
+                            Debug.Log("pos ultima moneda spawneada: " + posicionUltimaMonedaSpawneada);
+                            Debug.Log("distancia a comienzo tirada: " + distanciaASiguienteTirada);
+                            Debug.Log("La tirada comenzaría dentro de un grupo de obstáculos, corriendo el comienzo");
                         }
                     }
 
                     CortarGruposHasta(indiceUltimoGrupoEvaluado);
-
-                    //Si el último grupo de obstáculos está a una distancia menor a la mitad de la acción más larga del jugador más dos cambios de carril del final
-                    // de la pista entonces se considera el final de la pista como la posición del grupo de obstáculos más la mitad de la acción más larga del jugador.
-                    //Si no el final de la pista considerado será el final real de la pista menos la mitad de la acción más larga del jugador más 1 cambios de carril.
-
-                    if(grupos.Count > 0)
-                    {
-                        if(Vector3.Dot(finalPista - grupos[grupos.Count - 1].Posicion, scriptPista.EjeMovimiento.Vectorizado) < (distanciaMaxima / 2 + scriptJugador.DistanciaCambioCarril))
-                        {
-                            finalPista = grupos[grupos.Count - 1].Posicion + (distanciaMaxima / 2) * scriptPista.EjeMovimiento.Vectorizado;
-                        }
-                        else
-                        {
-                            finalPista -= (distanciaMaxima / 2 + scriptJugador.DistanciaCambioCarril) * scriptPista.EjeMovimiento.Vectorizado;
-                        }
-                    }
-                    else
-                    {
-                        finalPista -= (distanciaMaxima / 2 + scriptJugador.DistanciaCambioCarril) * scriptPista.EjeMovimiento.Vectorizado;
-                    }
-
                 }
-                else
-                {
 
-                    //Si la pista no tiene ningún grupo de obstáculos entonces se considera el final de la pista como el final real de la pista
-                    // menos la mitad de la acción más larga del jugador más 2 cambios de carril.
-                    finalPista -= (distanciaMaxima / 2 + scriptJugador.DistanciaCambioCarril * 2) * scriptPista.EjeMovimiento.Vectorizado;
+                //Si el último grupo de obstáculos está a una distancia menor a la mitad de la acción más larga del jugador más dos cambios de carril del final
+                // de la pista entonces se considera el final de la pista como la posición del grupo de obstáculos más la mitad de la acción más larga del jugador.
+                //Si no el final de la pista considerado será el final real de la pista menos la mitad de la acción más larga del jugador más 1 cambio de carril.
+                if(grupos.Count > 0)
+                {
+                    if(Vector3.Dot(finalPista - grupos[grupos.Count - 1].Posicion, scriptPista.EjeMovimiento.Vectorizado) < (distanciaMaxima / 2 + scriptJugador.DistanciaCambioCarril))
+                    {
+                        finalPista = grupos[grupos.Count - 1].Posicion + (distanciaMaxima / 2) * scriptPista.EjeMovimiento.Vectorizado;
+                    }
                 }
 
                 //Si el espacio es suficiente desde el inicio de la tirada hasta el final de la pista
@@ -360,9 +363,21 @@ public class MonedaManager : MonoBehaviour
         && continuarTirada)
         {
             int carrilNuevaMoneda;
-            float alturaNuevaMoneda;
+            float alturaNuevaMoneda = scriptJugador.AlturaBase;
 
             GameObject nuevaMoneda = ObtenerMonedaDesactivada();
+
+            bool atravesandoObstaculo = false;
+
+            if(carrilesPista[carrilUltimaMoneda].Habilitado)
+            {
+                carrilNuevaMoneda = carrilUltimaMoneda;
+            }
+            else
+            {
+                carrilNuevaMoneda = BuscarCarrilHabilitadoAleatorio(carrilesPista);
+                carrilUltimaMoneda = carrilNuevaMoneda;
+            }
 
             if(grupos.Count > 0)
             {
@@ -370,7 +385,8 @@ public class MonedaManager : MonoBehaviour
 
                 if(lugarActual == null)
                 {
-                    LugarObstaculo probarLugarContinuo = BuscarLugarLibreEnCarril(carrilUltimaMoneda, grupos[0].Lugares);
+                    LugarObstaculo probarLugarContinuo = grupos[0].DevolverLugarLibreAleatorioEnCarrilHabilitado(carrilUltimaMoneda);
+
                     if(probarLugarContinuo != null)
                     {
                         lugarActual = probarLugarContinuo;
@@ -379,18 +395,21 @@ public class MonedaManager : MonoBehaviour
                     {
                         lugarActual = grupos[0].DevolverLugarLibreAleatorioHabilitado();
                     }
+
+                    carrilNuevaMoneda = lugarActual.Carril;
                 }
 
-                grupoActualAtravesado = ObstaculoActualAtravesado(lugarActual.Altura);
+                bool grupoActualAtravesado = ObstaculoActualAtravesado(lugarActual.Altura);
 
-                if(grupoActualAtravesado)
+                while(grupoActualAtravesado)
                 {
                     grupos.RemoveAt(0);
-                    grupoActualAtravesado = false;
+                    lugarActual = null;
 
                     if(grupos.Count > 0)
                     {
-                        LugarObstaculo probarLugarContinuo = BuscarLugarLibreEnCarril(carrilUltimaMoneda, grupos[0].Lugares);
+                        ActualizarDistanciaAlGrupoActual(scriptPista.EjeMovimiento);
+                        LugarObstaculo probarLugarContinuo = grupos[0].DevolverLugarLibreAleatorioEnCarrilHabilitado(carrilUltimaMoneda);
                         if(probarLugarContinuo != null)
                         {
                             lugarActual = probarLugarContinuo;
@@ -405,21 +424,37 @@ public class MonedaManager : MonoBehaviour
                     else
                     {
                         lugarActual = null;
-                        carrilNuevaMoneda = carrilUltimaMoneda;
-                        atravesandoObstaculo = false;
+                    }
+
+                    if(lugarActual == null)
+                    {
+                        grupoActualAtravesado = false;
+                    }
+                    else
+                    {
+                        grupoActualAtravesado = ObstaculoActualAtravesado(lugarActual.Altura);
                     }
                 }
 
                 if(lugarActual != null)
                 {
-                    Atravesando(lugarActual.Altura);
+                    if(CercaniaObstaculoActual(lugarActual.Altura))
+                    {
+                        atravesandoObstaculo = Atravesando(lugarActual.Altura);
+                        carrilNuevaMoneda = lugarActual.Carril;
+                    }
+                    else
+                    {
+                        atravesandoObstaculo = false;
+                    }
+                }
+                else
+                {
+                    atravesandoObstaculo = false;
                 }
 
                 if(atravesandoObstaculo)
                 {
-                    carrilNuevaMoneda = lugarActual.Carril;
-                    carrilUltimaMoneda = carrilNuevaMoneda;
-
                     if(lugarActual.Altura == Altura.Arriba)
                     {
                         float distanciaRelativa = (scriptJugador.DistanciaSalto / 2 - distanciaSiguienteMonedaAlGrupoActual) / scriptJugador.DistanciaSalto;
@@ -437,41 +472,14 @@ public class MonedaManager : MonoBehaviour
                             alturaNuevaMoneda = alturaDesliz;
                         }
                     }
-                }
-                else
-                {
-                    if(!carrilesPista[carrilUltimaMoneda].Habilitado)
-                    {
-                        carrilNuevaMoneda = BuscarCarrilHabilitadoAleatorio(carrilesPista);
-                        carrilUltimaMoneda = carrilNuevaMoneda;
-                    }
-                    else
-                    {
-                        carrilNuevaMoneda = carrilUltimaMoneda;
-                    }
-
-                    alturaNuevaMoneda = scriptJugador.AlturaBase;
-                }
-                
-            }
-            else
-            {
-                //Si el carril de la última moneda spawneada está inhabilitado entonces elige otro carril al azar.
-                if(!carrilesPista[carrilUltimaMoneda].Habilitado)
-                {
-                    carrilNuevaMoneda = BuscarCarrilHabilitadoAleatorio(carrilesPista);
-                }
-                else
-                {
-                    carrilNuevaMoneda = carrilUltimaMoneda;
-                }
-
-                alturaNuevaMoneda = scriptJugador.AlturaBase;
+                }                
             }
 
             PosicionarMoneda(nuevaMoneda, Vector3.Scale(carrilesPista[carrilNuevaMoneda].Posicion.transform.position
             , scriptPista.EjeMovimiento.VectorAxisPerpendicular) + Vector3.Scale(posicionSiguienteMoneda, scriptPista.EjeMovimiento.VectorAxisParalelo)
             + alturaNuevaMoneda * Vector3.up , prefabMoneda.transform.rotation);
+
+            Debug.Log(carrilNuevaMoneda);
 
             posicionUltimaMonedaSpawneada = nuevaMoneda.transform.position;
 
