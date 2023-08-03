@@ -369,15 +369,12 @@ public class MonedaManager : MonoBehaviour
 
             bool atravesandoObstaculo = false;
 
-            if(carrilesPista[carrilUltimaMoneda].Habilitado)
+            if(!carrilesPista[carrilUltimaMoneda].Habilitado)
             {
-                carrilNuevaMoneda = carrilUltimaMoneda;
+                carrilUltimaMoneda = BuscarCarrilHabilitadoAleatorio(carrilesPista);
             }
-            else
-            {
-                carrilNuevaMoneda = BuscarCarrilHabilitadoAleatorio(carrilesPista);
-                carrilUltimaMoneda = carrilNuevaMoneda;
-            }
+
+            carrilNuevaMoneda = carrilUltimaMoneda;
 
             if(grupos.Count > 0)
             {

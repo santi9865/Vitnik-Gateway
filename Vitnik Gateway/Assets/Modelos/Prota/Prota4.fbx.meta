@@ -1,0 +1,192 @@
+fileFormatVersion: 2
+guid: 48c16edbe9e9784409463fecc3437175
+ModelImporter:
+  serializedVersion: 21300
+  internalIDToNameTable: []
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Lonpa
+    second: {fileID: 2100000, guid: 8cfeffb8e71ef37438d0ca28a12f41b1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Lonpa.001
+    second: {fileID: 2100000, guid: ef4dd2a8e8e893e419dfca758d7bc7dc, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pelo
+    second: {fileID: 2100000, guid: 3c45423690367cf4cac3652283f0d100, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Ray
+    second: {fileID: 2100000, guid: 42a37f83b61581543863b4d784891e4f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Ray.001
+    second: {fileID: 2100000, guid: 20801493009de9c41bec90826c9e48b2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Remer
+    second: {fileID: 2100000, guid: a2a1e8121d0170f46b351e15ea66bc0b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Remer.001
+    second: {fileID: 2100000, guid: 2fdd37aaa5fdc3147b437de8533c3bed, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Skin
+    second: {fileID: 2100000, guid: 9b52003b0d3dd3248a38befa82ecd748, type: 2}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 1
+    motionNodeName: 
+    rigImportErrors: "Invalid Avatar Rig Configuration. Missing or invalid transform:\n\tRequired
+      human bone 'Hips' not found\n"
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton:
+    - name: Prota4(Clone)
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Eyes
+      parentName: Prota4(Clone)
+      position: {x: -0.076410554, y: 3.3001776, z: 0.069761656}
+      rotation: {x: -0.6969543, y: -0.11939316, z: -0.119393155, w: 0.6969543}
+      scale: {x: 4.648022, y: 2.6663618, z: 2.6663613}
+    - name: Hair
+      parentName: Prota4(Clone)
+      position: {x: -3.9029147e-16, y: 3.24042, z: -0.07162898}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 20.246038, y: 20.246038, z: 20.246038}
+    - name: Ears
+      parentName: Prota4(Clone)
+      position: {x: -0.16800717, y: 3.2362566, z: -0.115634486}
+      rotation: {x: -0.6473933, y: -0.28162605, z: -0.33949718, w: 0.6215387}
+      scale: {x: 5.404481, y: 0.4249845, z: 5.4044814}
+    - name: FaceHiPoly
+      parentName: Prota4(Clone)
+      position: {x: -3.9029147e-16, y: 3.299198, z: -0.07162898}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 20.246038, y: 20.246038, z: 20.246038}
+    - name: Cejas
+      parentName: Prota4(Clone)
+      position: {x: 0.051010005, y: 3.326183, z: 0.080217406}
+      rotation: {x: -0.70611477, y: -0.037442602, z: 0.03744259, w: 0.70611477}
+      scale: {x: 0.94717985, y: 0.94717985, z: 0.94717985}
+    - name: Body
+      parentName: Prota4(Clone)
+      position: {x: -2.3283064e-10, y: -0.00000023841858, z: 7.1054274e-15}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 17.99971, y: 17.99971, z: 17.99971}
+    - name: Hands
+      parentName: Prota4(Clone)
+      position: {x: 1.0825613, y: 2.0914726, z: -0.18278128}
+      rotation: {x: -0.6468282, y: 0.2856806, z: -0.28568053, w: 0.64682806}
+      scale: {x: 8.015222, y: 8.015222, z: 8.015222}
+    - name: Shoes
+      parentName: Prota4(Clone)
+      position: {x: -0.38763046, y: 0.09957814, z: -0.17383663}
+      rotation: {x: -0.7070062, y: -0.011924844, z: -0.011924843, w: 0.7070063}
+      scale: {x: 9.1613245, y: 9.1613245, z: 9.1613245}
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 1
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 3
+  humanoidOversampling: 1
+  avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
