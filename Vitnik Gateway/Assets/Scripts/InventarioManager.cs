@@ -21,8 +21,6 @@ public class InventarioManager : MonoBehaviour
     private List<Item> itemsEquipados;
     private List<GameObject> iconos;
 
-
-    // Start is called before the first frame update
     void Start()
     {
         CargarItemsAdquiridosJugador();

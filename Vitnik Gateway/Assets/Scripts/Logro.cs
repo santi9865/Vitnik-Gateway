@@ -17,7 +17,8 @@ public class Logro
     private LogrosManager _manager;
 
 
-    public Logro(int id, string nombre, string descripcion, string tipo, int meta, int idIcono, int progreso, string tipoRecompensa, int valorRecompensa, LogrosManager manager)
+    public Logro(int id, string nombre, string descripcion, string tipo, int meta,
+     int idIcono, int progreso, string tipoRecompensa, int valorRecompensa, LogrosManager manager)
     {
         ID = id;
         Nombre = nombre;

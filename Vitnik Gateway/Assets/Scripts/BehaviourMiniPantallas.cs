@@ -4,80 +4,80 @@ using UnityEngine;
 
 public class BehaviourMiniPantallas : MonoBehaviour
 {
-    [SerializeField] private GameObject pantallaGameOver;
-    [SerializeField] private GameObject pantallaPausa;
-    [SerializeField] private GameObject pantallaOpciones;
-    [SerializeField] private GameManager gameManager;
+    [SerializeField] private BehaviourMiniPantallaGameOver pantallaGameOver;
+    [SerializeField] private BehaviourMiniPantallaPausa pantallaPausa;
+    [SerializeField] private BehaviourMiniPantallaOpciones pantallaOpciones;
 
-    public bool pantallaPausaActive {get {return pantallaPausa.activeSelf;}}
-    public bool pantallaOpcionesActive {get {return pantallaOpciones.activeSelf;}}
-
-    private bool pantallaPausaActivaAnterior = false;
-
-
-    // Start is called before the first frame update
     void Start()
     {
-        
+        GameManager.Instancia.GameOver += GameOver;
     }
 
-    // Update is called once per frame
-    void Update()
+    void OnDestroy()
     {
-        
+        GameManager.Instancia.GameOver -= GameOver;
     }
 
     public void PantallaGameOverSetActive(bool nuevoEstado)
     {
-        pantallaGameOver.SetActive(nuevoEstado);
-
-        pantallaGameOver.GetComponent<BehaviourMiniPantallaGameOver>().Actualizar();
-
-        if(nuevoEstado) 
+        if(nuevoEstado)
         {
-            gameManager.PauseGame();
+            pantallaGameOver.Activar();
+            GameManager.Instancia.PauseGame();
+        }   
+        else
+        {
+            pantallaGameOver.Desactivar();
         }
+
+        pantallaGameOver.Actualizar();
     }
 
     public void PantallaPausaSetActive(bool nuevoEstado)
     {
-        pantallaPausa.SetActive(nuevoEstado);
-
         if(nuevoEstado)
         {
-            gameManager.PauseGame();
+            GameManager.Instancia.PauseGame();
+            pantallaPausa.Activar();
+        }
+        else
+        {
+            GameManager.Instancia.UnPauseGame();
+            pantallaPausa.Desactivar();
         }
     }
 
     public void PantallaOpcionesSetActive(bool nuevoEstado)
     {
-        pantallaOpciones.SetActive(nuevoEstado);
-
-        if(pantallaPausa.activeSelf)
-        {
-            pantallaPausaActivaAnterior = pantallaPausa.activeSelf;
-            PantallaPausaSetActive(false);
-        }
-
         if(nuevoEstado)
         {
-            pantallaOpciones.GetComponent<BehaviourMiniPantallaOpciones>().Actualizar();
-            gameManager.PauseGame();
+            pantallaPausa.Desactivar();
+            pantallaOpciones.Activar();
+            pantallaOpciones.Actualizar();
         }
         else
         {
             SoundManager.Instancia.GuardarOpciones();
-
-            if(pantallaPausaActivaAnterior)
-            {
-                PantallaPausaSetActive(true);
-                pantallaPausaActivaAnterior = false;
-            }
+            pantallaOpciones.Desactivar();
+            pantallaPausa.Activar();
         }
+    }
+
+    public void CerrarTodo()
+    {
+        SoundManager.Instancia.GuardarOpciones();
+        pantallaOpciones.Desactivar();
+        pantallaPausa.Desactivar();
+        GameManager.Instancia.UnPauseGame();
     }
 
     public void IrAMenuPrincipal()
     {
         BehaviourSceneManager.IrAEscena(TipoEscena.MENUPRINCIPAL);
+    }
+
+    public void GameOver()
+    {
+        PantallaGameOverSetActive(true);
     }
 }

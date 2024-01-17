@@ -7,23 +7,14 @@ using UnityEngine.EventSystems;
 
 public class HUDManager : MonoBehaviour
 {
-
     [SerializeField] private TMP_Text txtMonedas;
     [SerializeField] private TMP_Text txtDistancia;
     [SerializeField] private BehaviourMiniPantallas behaviourMiniPantallas;
 
-    private bool estadoBtnPausa;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        estadoBtnPausa = false;
-    }
-
-    // Update is called once per frame
     void Update()
     {
-        
+        ActualizarDistancia();
+        ActualizarMonedas();
     }
 
     public void ActualizarMonedas()
@@ -38,29 +29,13 @@ public class HUDManager : MonoBehaviour
 
     public void BtnPausa()
     {
-        if(estadoBtnPausa)
+        if(GameManager.Instancia.IsPaused)
         {
-            EventSystem.current.SetSelectedGameObject(null);
-            ActualizarEstadoBtnPausa(false);
-
-            if(behaviourMiniPantallas.pantallaOpcionesActive)
-            {
-                behaviourMiniPantallas.PantallaOpcionesSetActive(false);
-            }
-            GameManager.Instancia.UnPauseGame();
-            behaviourMiniPantallas.PantallaPausaSetActive(false);
+            behaviourMiniPantallas.CerrarTodo();
         }
         else
         {
-            GameManager.Instancia.PauseGame();
-            ActualizarEstadoBtnPausa(true);
             behaviourMiniPantallas.PantallaPausaSetActive(true);
         }
     }
-
-    public void ActualizarEstadoBtnPausa(bool nuevoEstado)
-    {
-        estadoBtnPausa = nuevoEstado;
-    }
-
 }

@@ -27,11 +27,6 @@ public class BehaviourPista : MonoBehaviour
 
     [SerializeField] private Quaternion rotacionOriginal;
 
-    void Start()
-    {
-        
-    }
-
     public void ReiniciarEje()
     {
         transform.rotation = rotacionOriginal;

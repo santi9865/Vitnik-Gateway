@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,41 +6,37 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public event Action GameOver;
     public static GameManager Instancia {get; private set;}
     public int Monedas { get; private set;} = 0;
     public float Distancia {get; private set;} = 0;
+    public bool IsPaused {get; private set;} = false;
 
-    [SerializeField] private HUDManager hudManager;
     [SerializeField] private StatsJugador statsJugador;
     [SerializeField] private BehaviourCamera scriptCamara;
     [SerializeField] private MonedaManager monedaManager;
+    [SerializeField] private PistaManager pistaManager;
 
     private void Awake()
     {
         Instancia = this;
-        // if(Instancia == null)
-        // {
-        //     Instancia = this;
-        //     DontDestroyOnLoad(gameObject);
-        // }
-        // else
-        // {
-        //     Destroy(gameObject);
-        // }
     }
 
     public void PauseGame()
     {
         Time.timeScale = 0;
+        IsPaused = true;
     }
 
     public void UnPauseGame()
     {
         Time.timeScale = 1;
+        IsPaused = false;
     }
 
     public void ResetLevel()
     {
+        UnPauseGame();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
@@ -55,8 +52,6 @@ public class GameManager : MonoBehaviour
         {
             Monedas += cantidad;
         }
-
-        hudManager.ActualizarMonedas();
     }
 
     public void AddDistancia(float desplazamiento)
@@ -65,13 +60,15 @@ public class GameManager : MonoBehaviour
         {
             Distancia += desplazamiento;
         }
+    }
 
-        hudManager.ActualizarDistancia();
+    public void InvocarGameOver()
+    {
+        GameOver.Invoke();
     }
 
     public void JugadorDobloDerecha(GameObject pista, Rama rama)
     {
-        PistaManager pistaManager = GetComponent<PistaManager>();
         pistaManager.CambiarSendaPrincipal(pista, rama);
 
         rama.AlinearSegunPadre(pista.GetComponent<BehaviourPista>().EjeMovimiento);
@@ -83,7 +80,6 @@ public class GameManager : MonoBehaviour
 
     public void JugadorDobloIzquierda(GameObject pista, Rama rama)
     {
-        PistaManager pistaManager = GetComponent<PistaManager>();
         pistaManager.CambiarSendaPrincipal(pista, rama);
 
         rama.AlinearSegunPadre(pista.GetComponent<BehaviourPista>().EjeMovimiento);

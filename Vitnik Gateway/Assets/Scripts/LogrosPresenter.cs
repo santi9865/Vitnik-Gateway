@@ -41,7 +41,8 @@ public class LogrosPresenter : MonoBehaviour
             nuevoPanel = Instantiate(prefabPanelLogro, contenedorLogros.transform);
             scriptNuevoPanel = nuevoPanel.GetComponent<PanelLogro>();
 
-            scriptNuevoPanel.Actualizar(logro.Nombre, logro.Descripcion, logro.Progreso / (float)logro.Meta, ObtenerSpriteLogroSegunID(logro.ID));
+            scriptNuevoPanel.Actualizar(logro.Nombre, logro.Descripcion, logro.Progreso 
+            / (float)logro.Meta, ObtenerSpriteLogroSegunID(logro.ID));
     }
 
     private Sprite ObtenerSpriteLogroSegunID(int ID)

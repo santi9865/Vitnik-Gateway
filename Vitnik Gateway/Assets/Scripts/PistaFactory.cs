@@ -64,16 +64,4 @@ public class PistaFactory : MonoBehaviour
 
         return Instantiate(pista,contenedorPistas.transform);
     }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

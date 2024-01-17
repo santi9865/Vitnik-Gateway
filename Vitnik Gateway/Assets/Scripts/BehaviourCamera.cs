@@ -27,12 +27,7 @@ public class BehaviourCamera : MonoBehaviour
 
         posicionRelativa = positionOffset;
     }
-
-    void Update()
-    {
-
-    }
-
+    
     void FixedUpdate()
     {
         if(acomodando)

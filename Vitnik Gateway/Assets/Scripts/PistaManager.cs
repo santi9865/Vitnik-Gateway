@@ -5,9 +5,11 @@ using UnityEngine;
 public class PistaManager : MonoBehaviour
 {
     [SerializeField] private List<GameObject> pistas;
-    //Cantidad de pistas que no sean intersecciones que deben spawnear antes de que sea posible spawnear una pista de intersección.
+    //Cantidad de pistas que no sean intersecciones que deben 
+    //spawnear antes de que sea posible spawnear una pista de intersección.
     [SerializeField] private int pistasMinimasInterseccion;
-    //Probailidad de que se spawnee una pista de intersección una vez que se cumpla con el mínimo de pistas no intersecciones.
+    //Probailidad de que se spawnee una pista de intersección 
+    //una vez que se cumpla con el mínimo de pistas no intersecciones.
     [SerializeField] private float probabilidadInterseccion;
     [SerializeField] private int pistasPorRama;
 
@@ -16,7 +18,8 @@ public class PistaManager : MonoBehaviour
 
     //Que pista de la lista debería pasarse antes de borrar la última.
     [SerializeField] private int estelaDePistas;
-    //Cantidad mínima de pistas no rotas que deben spawnear antes de que sea posible spawnear una pista rota.
+    //Cantidad mínima de pistas no rotas que deben spawnear 
+    //antes de que sea posible spawnear una pista rota.
     [SerializeField] private int pistasMinimasRotura;
 
     //Probabilidad de que spawnee una pista rota de inicio.
@@ -32,17 +35,13 @@ public class PistaManager : MonoBehaviour
 
     private List<GameObject> sendaPrincipal;
     private Eje ejePrincipal;
-    private ObstaculoManager obstaculoManager;
-    private MonedaManager monedaManager;
+    [SerializeField] private ObstaculoManager obstaculoManager;
+    [SerializeField] private MonedaManager monedaManager;
 
     private int contadorPistas = 8;
 
-    // Start is called before the first frame update
     void Start()
     {
-        obstaculoManager = GetComponent<ObstaculoManager>();
-        monedaManager = GetComponent<MonedaManager>();
-
         ClonarPistas();
 
         ejePrincipal = new Eje(EjeDireccion.Z, EjeSentido.Positivo);
@@ -60,7 +59,6 @@ public class PistaManager : MonoBehaviour
             }
         }
     }
-
 
     private GameObject ObtenerPistaDesactivada(TipoPista tipo = TipoPista.Recta)
     {

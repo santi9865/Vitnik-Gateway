@@ -8,16 +8,19 @@ public class BehaviourMiniPantallaOpciones : MonoBehaviour
     [SerializeField] Slider sliMusica;
     [SerializeField] Slider sliSonido;
 
-    // Start is called before the first frame update
     void Start()
     {
         Actualizar();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Activar()
     {
-        
+        gameObject.SetActive(true);
+    }
+
+    public void Desactivar()
+    {
+        gameObject.SetActive(false);
     }
 
     public void Actualizar()

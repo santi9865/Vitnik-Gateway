@@ -5,12 +5,13 @@ using UnityEngine;
 public class BehaviourMovimientoJugador : MonoBehaviour
 {
     public Eje EjeMovimiento {get; private set;}
-    public Vector3 Orientacion {get; private set;} //Arriba o abajo
+    //Arriba o abajo
+    public Vector3 Orientacion {get; private set;} 
     [SerializeField] private float velocidad;
     [SerializeField] private float distanciaMaximaSalto;
     public float DistanciaSalto {get => distanciaMaximaSalto;}
     [SerializeField] private float distanciaMaximaDesliz;
-    public float DistanciaDesliz {get => distanciaMaximaSalto;}
+    public float DistanciaDesliz {get => distanciaMaximaDesliz;}
     [SerializeField] private float alturaBase;
     public float AlturaBase {get => alturaBase;}
     [SerializeField] private float alturaMaxima = 0;
@@ -24,7 +25,6 @@ public class BehaviourMovimientoJugador : MonoBehaviour
 
     [SerializeField] private List<Carril> carriles;
     [SerializeField] private int carrilActual = 1;
-    [SerializeField] private BehaviourMiniPantallas scriptMiniPantallas;
 
     [SerializeField] private Vector3 centroColliderNormal;
     [SerializeField] private Vector3 tamañoColliderNormal;
@@ -67,7 +67,6 @@ public class BehaviourMovimientoJugador : MonoBehaviour
         posicionAnterior = gameObject.transform.position;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if(vivo)
@@ -107,7 +106,6 @@ public class BehaviourMovimientoJugador : MonoBehaviour
                     DoblarIzquierda();
                 }
             }
-
             if(Input.GetKey(KeyCode.RightArrow))
             {
                 if(!doblando && !cambiandoCarril && !deslizando && !saltando && puedeDoblarDerecha)
@@ -115,32 +113,30 @@ public class BehaviourMovimientoJugador : MonoBehaviour
                     DoblarDerecha();
                 }
             }
-
         }
     }
 
     void FixedUpdate()
     {
-            MoverseHaciaAdelante();
+        MoverseHaciaAdelante();
 
-            if(deslizando)
-            {
-                ContarTimerDesliz();
-            }
+        if(deslizando)
+        {
+            ContarTimerDesliz();
+        }
 
-            if(cambiandoCarril)
-            {
-                CambiarACarril();
-                ContarTimerCambioCarril();
-            }
+        if(cambiandoCarril)
+        {
+            CambiarACarril();
+            ContarTimerCambioCarril();
+        }
 
-            if(saltando)
-            {
-                ContarTimerSalto();
-                EjecutarTrayectoriaSalto();
-            }
+        if(saltando)
+        {
+            ContarTimerSalto();
+            EjecutarTrayectoriaSalto();
+        }
     }
-
 
     #region Deslizamiento
 
@@ -443,14 +439,14 @@ public class BehaviourMovimientoJugador : MonoBehaviour
         posicionAnterior = gameObject.transform.position;
     }
 
-    //Este m�todo es llamado por el script del detector de colisiones del jugador
+    //Este metodo es llamado por el script del detector de colisiones del jugador
     public void ColisionObstaculo(ObstacleType tipoObstaculo)
     {
         switch (tipoObstaculo)
         {
             case ObstacleType.Solid:
                 vivo = false;
-                scriptMiniPantallas.PantallaGameOverSetActive(true);
+                GameManager.Instancia.InvocarGameOver();
                 GameManager.Instancia.IntentoTerminado();
                 break;
             case ObstacleType.Moneda:
@@ -463,22 +459,5 @@ public class BehaviourMovimientoJugador : MonoBehaviour
     {
         carriles = seccion.GetComponentInChildren<BehaviourListaCarriles>().Carriles;
     }
-
-    //Start of debug methods
-
-    private void DebugAltura(bool outputToConsole)
-    {
-        if(gameObject.transform.position.y > alturaMaxima)
-        {
-            alturaMaxima = gameObject.transform.position.y;
-
-            if(outputToConsole)
-            {
-                Debug.Log(alturaMaxima);
-            }
-        }
-    }
-
-    //End of debug methods
 }
 

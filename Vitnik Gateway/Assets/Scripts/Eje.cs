@@ -78,7 +78,9 @@ public class Eje
         Vectorizado = vector;
     }
 
-    public void GirarIzquierda() //Cambiar de dirección y sentido como si se viera desde Y positivo hacia Y negativo, es decir, desde arriba.
+    public void GirarIzquierda() 
+    //Cambiar de dirección y sentido como si se viera desde 
+    //Y positivo hacia Y negativo, es decir, desde arriba.
     {
         switch(Direccion)
         {
@@ -94,7 +96,9 @@ public class Eje
         Vectorizar();
     }
 
-    public void GirarDerecha() //Cambiar de dirección y sentido como si se viera desde Y positivo hacia Y negativo, es decir, desde arriba.
+    public void GirarDerecha() 
+    //Cambiar de dirección y sentido como si se viera desde 
+    //Y positivo hacia Y negativo, es decir, desde arriba.
     {
         switch(Direccion)
         {
@@ -123,7 +127,8 @@ public class Eje
         }
     }
 
-    public float AngulosA(Eje nuevoEje) //Rotacion calculada según el eje Y visto desde arriba hacia abajo.
+    public float AngulosA(Eje nuevoEje) 
+    //Rotacion calculada según el eje Y visto desde arriba hacia abajo.
     {
         if(nuevoEje.Direccion == Direccion)
         {

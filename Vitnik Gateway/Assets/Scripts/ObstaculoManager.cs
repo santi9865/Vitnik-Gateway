@@ -4,36 +4,41 @@ using UnityEngine;
 
 public class ObstaculoManager : MonoBehaviour
 {
+    //Posición en Y de los obstáculos que están "abajo"
     [SerializeField] private float alturaPrimerPiso;
+    //Posición en Y de los obstáculos que están "arriba"
     [SerializeField] private float alturaSegundoPiso;
     //Distancia media entre los obstáculos.
     [SerializeField] private float distancia;
     //Margen sobre el cual puede variar la disntancia media entre obstáculos.
     [SerializeField] private float varianzaPosicion;
-    //Unidad sobre la cuál se basa la distancia entre los obstáculos. Todos los obstáculos están separados
-    //en múltiplos de esta unidad.
+    //Unidad sobre la cuál se basa la distancia entre los obstáculos. 
+    //Todos los obstáculos están separados en múltiplos de esta unidad.
     [SerializeField] private float unidad;
-    //Distancia a partir de la cuál se toman en cuenta los carriles de la pista siguiente para el posicionamiento de los obstáculos.
+    //Distancia a partir de la cuál se toman en cuenta los carriles 
+    //de la pista siguiente para el posicionamiento de los obstáculos.
     [SerializeField] private float distanciaPistaSiguiente;
-    //Distancia a partir de la cuál se toman en cuenta los carriles de la pista anterior para el posicionamiento de los obstáculos.
+    //Distancia a partir de la cuál se toman en cuenta los carriles 
+    //de la pista anterior para el posicionamiento de los obstáculos.
     [SerializeField] private float distanciaPistaAnterior;
-
-    //Distancia mínima agregada a la distancia más grande entre salto o deslizamiento para dar al jugador tiempo para ejecutar una acción.
+    //Distancia mínima agregada a la distancia más grande entre salto 
+    //o deslizamiento para dar al jugador tiempo para ejecutar una acción.
     [SerializeField] private float margenDeManiobra;
 
+    //Probabilidad de que se ponga otro obstáculo en el grupo luego
+    //de que se ha puesto el último. O sea, pueden ser varios.
     [SerializeField] private float probabilidadSpawnMultiple;
+    //Posición del último grupo de obstáculos colocado.
     [SerializeField] private Vector3 posicionUltimoGrupo;
 
     [SerializeField] private GameObject prefabObstaculo;
     [SerializeField] private int tamañoPool;
     [SerializeField] private GameObject contenedorObstaculos;
+    private List<GameObject> poolObstaculos;
 
     [SerializeField] private BehaviourMovimientoJugador scriptJugador;
 
-    private List<GameObject> poolObstaculos;
-
     private const float MARGENTECHOYPISO = 0.001F;
-
 
     void Start()
     {
@@ -53,9 +58,7 @@ public class ObstaculoManager : MonoBehaviour
         poolObstaculos.Add(obstaculo);
 
         obstaculo.name = nombre;
-
-        //Debug.Log("Obstaculo creado.");
-
+        
         return obstaculo;
     }
 
@@ -253,7 +256,8 @@ public class ObstaculoManager : MonoBehaviour
 
             //Los obstáculos siempre se ponen relativos a la posicón de los carriles de la pista central ingresada como argumento.
 
-            GrupoObstaculos nuevoGrupo = new GrupoObstaculos(posicionNuevoGrupo, new List<LugarObstaculo>(), pista.GetComponentInChildren<BehaviourListaCarriles>().Carriles, carrilesAConsiderar);
+            GrupoObstaculos nuevoGrupo = new GrupoObstaculos(posicionNuevoGrupo, 
+            new List<LugarObstaculo>(), pista.GetComponentInChildren<BehaviourListaCarriles>().Carriles, carrilesAConsiderar);
 
             //Llena el grupo de obstáculos de lugares según la cantidad de carriles.
 
@@ -288,18 +292,6 @@ public class ObstaculoManager : MonoBehaviour
 
             lugarLibreAleatorio.Obstaculo.SetActive(true);
             
-            int cantidadLugaresLibres = 0;
-
-            foreach(LugarObstaculo lugar in nuevoGrupo.Lugares)
-            {
-                Carril scriptCarril = nuevoGrupo.Carriles[lugar.Carril];
-
-                if(scriptCarril.Habilitado && lugar.Libre)
-                {
-                    cantidadLugaresLibres++;
-                }
-            }
-
             for(int i = 0; i < nuevoGrupo.CantidadLugaresLibresHabilitados - 1; i++)
             {
                 numeroRandom = Random.Range(0f,1f);
@@ -336,7 +328,9 @@ public class ObstaculoManager : MonoBehaviour
                         posicionVertical = alturaPrimerPiso;
                     }
 
-                    PosicionarObstaculo(lugar.Obstaculo, Vector3.Scale(nuevoGrupo.Carriles[lugar.Carril].transform.position, scriptPista.EjeMovimiento.VectorAxisPerpendicular) + posicionVertical * Vector3.up + Vector3.Scale(nuevoGrupo.Posicion, scriptPista.EjeMovimiento.VectorAxisParalelo), lugar.Obstaculo.transform.rotation);
+                    PosicionarObstaculo(lugar.Obstaculo, Vector3.Scale(nuevoGrupo.Carriles[lugar.Carril].transform.position,
+                     scriptPista.EjeMovimiento.VectorAxisPerpendicular) + posicionVertical * Vector3.up + 
+                     Vector3.Scale(nuevoGrupo.Posicion, scriptPista.EjeMovimiento.VectorAxisParalelo), lugar.Obstaculo.transform.rotation);
                 }
             }
 
@@ -346,9 +340,8 @@ public class ObstaculoManager : MonoBehaviour
 
             margenAleatorio = PisoEnUnidad(Random.Range(-varianzaPosicion,varianzaPosicion));
 
-            //Debug.Log(distancia + margenAleatorio);
-
-            distanciaUltimoGrupoAFinalPista = Vector3.Dot(pista.transform.position + (scriptPista.Longitud / 2) * scriptPista.EjeMovimiento.Vectorizado - 
+            distanciaUltimoGrupoAFinalPista = Vector3.Dot(pista.transform.position +
+             (scriptPista.Longitud / 2) * scriptPista.EjeMovimiento.Vectorizado - 
             posicionUltimoGrupo, scriptPista.EjeMovimiento.Vectorizado);
         }
 

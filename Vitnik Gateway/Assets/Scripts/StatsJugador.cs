@@ -4,19 +4,11 @@ using UnityEngine;
 
 public class StatsJugador : MonoBehaviour
 {
-
     private ConexionDatabase conexionDatabase;
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         conexionDatabase = gameObject.GetComponent<ConexionDatabase>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void AgregarMonedas(int monedasNuevas)

@@ -7,18 +7,12 @@ public class BehaviourPlayerCollisionDetector : MonoBehaviour
     [SerializeField] private BehaviourMovimientoJugador scriptMovimientoJugador;
     private BoxCollider boxCollider;
 
-    // Start is called before the first frame update
     void Start()
     {
         scriptMovimientoJugador = gameObject.GetComponentInParent<BehaviourMovimientoJugador>();
         boxCollider = gameObject.GetComponent<BoxCollider>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     public void ActualizarCollider(Vector3 centro, Vector3 tamaño)
     {
         boxCollider.center = centro;

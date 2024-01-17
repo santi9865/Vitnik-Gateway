@@ -8,17 +8,14 @@ public class BehaviourMiniPantallaGameOver : MonoBehaviour
     [SerializeField] private TMP_Text distanciaRecorrida;
     [SerializeField] private TMP_Text monedasObtenidas;
 
-
-    // Start is called before the first frame update
-    void Start()
+    public void Activar()
     {
-        
+        gameObject.SetActive(true);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Desactivar()
     {
-        
+        gameObject.SetActive(false);
     }
 
     public void Actualizar()

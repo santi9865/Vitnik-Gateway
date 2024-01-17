@@ -11,7 +11,8 @@ public class GrupoObstaculos
     public int CantidadLugaresLibresHabilitados {get => ContarLugaresLibresHabilitados();}
     private List<Carril> _carrilesAConsiderar;
 
-    public GrupoObstaculos(Vector3 posicion, List<LugarObstaculo> lugares, List<Carril> carriles, List<Carril> carrilesAConsiderar = null)
+    public GrupoObstaculos(Vector3 posicion, List<LugarObstaculo> lugares,
+     List<Carril> carriles, List<Carril> carrilesAConsiderar = null)
     {
         Posicion = posicion;
         Lugares = lugares;

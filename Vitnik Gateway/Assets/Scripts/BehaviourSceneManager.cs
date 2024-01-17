@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class BehaviourSceneManager : MonoBehaviour
 {
-    // Start is called before the first frame update
     public static void IrAEscena(TipoEscena tipo)
     {
         if(TipoANombreEscena(tipo) != null)
@@ -17,8 +16,6 @@ public class BehaviourSceneManager : MonoBehaviour
         {
             Debug.Log("Tipo de escena desconocido.");
         }
-
-
     }
 
     public void Salir()
