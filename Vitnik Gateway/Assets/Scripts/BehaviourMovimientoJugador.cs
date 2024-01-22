@@ -213,29 +213,9 @@ public class BehaviourMovimientoJugador : MonoBehaviour
 
         interpolador = Mathf.Clamp(Mathf.Sqrt(timerCambioCarril / tiempoMaximoCambioCarril), 0.1F, 1);
 
-        // float valorMedio = ((2 / tiempoMaximoCambioCarril) * Mathf.Pow(0.5F,3)) * (timerCambioCarril) - Mathf.Pow(0.5F,3);
-        // if(valorMedio < 0)
-        // {
-        //     interpolador = Mathf.Clamp((-Mathf.Pow(-valorMedio, 1F/3F) + 0.5F), 0, 1);
-        // }
-        // else
-        // {
-        //     interpolador = Mathf.Clamp((Mathf.Pow(valorMedio, 1F/3F) + 0.5F), 0, 1);
-        // }
-
-        //Produce error porque no se puede usar Mathf.Pow para sacar raíces con exponentes impares de números negativos
-        //Mathf.Clamp((Mathf.Pow(((2 / tiempoMaximoCambioCarril) * Mathf.Pow(0.5F,3)) * (timerCambioCarril) - Mathf.Pow(0.5F,3), 1F/3F) + 0.5F), 0, 1);
-
-        //Debug.Log("timer: " + timerCambioCarril);
-        //Debug.Log("timer por 0.5f^3: " + Mathf.Pow(0.5F,3) * (timerCambioCarril));
-        //Debug.Log("interpolador: " + interpolador);
-
-
         Vector3 vectorInterpolador = Vector3.Scale(Vector3.Lerp(carrilInicial,carrilFinal,interpolador), EjeMovimiento.VectorAxisPerpendicular);
 
         gameObject.transform.position = vectorInterpolador + Vector3.Scale(gameObject.transform.position, EjeMovimiento.VectorAxisParalelo) + Vector3.Scale(gameObject.transform.position, Vector3.up);
-
-        //gameObject.transform.position = new Vector3(Vector3.Lerp(carrilInicial,carrilFinal,interpolador).x, gameObject.transform.position.y, gameObject.transform.position.z);
     }
 
     private void MoverseALaDerecha()
@@ -451,6 +431,11 @@ public class BehaviourMovimientoJugador : MonoBehaviour
                 break;
             case ObstacleType.Moneda:
                 GameManager.Instancia.AddMonedas(1);
+                break;
+            case ObstacleType.FinPista:
+                vivo = false;
+                GameManager.Instancia.InvocarGameOver();
+                GameManager.Instancia.IntentoTerminado();
                 break;
         }
     }

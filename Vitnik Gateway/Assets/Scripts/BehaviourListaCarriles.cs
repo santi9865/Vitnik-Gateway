@@ -53,7 +53,5 @@ public class BehaviourListaCarriles : MonoBehaviour
             (TipoCarril TipoA, TipoCarril TipoB) when TipoA == TipoB => 0,
             _ => 1
        };
-    }
-
-    
+    }    
 }

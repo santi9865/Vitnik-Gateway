@@ -36,6 +36,9 @@ public class BehaviourPlayerCollisionDetector : MonoBehaviour
             case "ColliderRama":
                 scriptMovimientoJugador.RamaDisponible(other.gameObject.GetComponent<BehaviourColliderRama>().RamaAsociada);
                 break;
+            case "ColliderFinPista":
+                scriptMovimientoJugador.ColisionObstaculo(ObstacleType.FinPista);
+                break;
         }
     }
 
@@ -54,5 +57,5 @@ public class BehaviourPlayerCollisionDetector : MonoBehaviour
 
 public enum ObstacleType
 {
-    Solid, Moneda
+    Solid, Moneda, FinPista
 }
