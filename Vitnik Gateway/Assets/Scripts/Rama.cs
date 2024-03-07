@@ -58,5 +58,5 @@ public class Rama : MonoBehaviour
 
 public enum TipoRama
 {
-    Izquierda, Derecha
+    Izquierda, Derecha, Central
 }

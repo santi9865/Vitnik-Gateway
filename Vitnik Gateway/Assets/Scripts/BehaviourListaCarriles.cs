@@ -14,10 +14,6 @@ public class BehaviourListaCarriles : MonoBehaviour
         }
     }
 
-    void Awake()
-    {
-    }
-
     private void BuscarCarrilesEnHijos()
     {
         carriles = new List<Carril>();

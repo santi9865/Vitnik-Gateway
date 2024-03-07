@@ -9,6 +9,7 @@ TagManager:
   - ColliderInicioPista
   - ColliderRama
   - ColliderFinPista
+  - ColliderRotura
   layers:
   - Default
   - TransparentFX
