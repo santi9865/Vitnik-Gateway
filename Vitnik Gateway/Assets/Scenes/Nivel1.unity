@@ -2730,6 +2730,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b57dcf10fc60d7429edaf4d50021e46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debug: 1
   prefabMoneda: {fileID: 8930014257354448689, guid: 27a2489dfaf8c934ea47d6c5eae73044,
     type: 3}
   contenedorMonedas: {fileID: 818293253}
@@ -2737,8 +2738,9 @@ MonoBehaviour:
   espaciado: 1
   alturaDesliz: 0.5
   largoMaximoTirada: 10
-  largoMinimoTirada: 1
-  intervaloTiradas: 10
+  largoMinimoTirada: 5
+  intervaloMinimoTiradas: 20
+  intervaloMaximoTiradas: 30
   scriptJugador: {fileID: 1709144120}
   posicionUltimaMonedaSpawneada: {x: 0, y: 0, z: 0}
 --- !u!1 &827455417
@@ -3528,9 +3530,9 @@ MonoBehaviour:
   - {fileID: 2072852054}
   - {fileID: 997988343}
   - {fileID: 1922230193}
-  pistasMinimasInterseccion: 3
+  pistasMinimasInterseccion: 10
   probabilidadInterseccion: 0.5
-  pistasPorRama: 3
+  pistasPorRama: 8
   pistasDeGraciaInterseccion: 0
   estelaDePistas: 3
   pistasMinimasRotura: 3
@@ -3539,6 +3541,7 @@ MonoBehaviour:
   pistaFactory: {fileID: 1177959774}
   obstaculoManager: {fileID: 1570015933}
   monedaManager: {fileID: 818293256}
+  debug: 1
 --- !u!1 &1193857146
 GameObject:
   m_ObjectHideFlags: 0
@@ -4928,10 +4931,10 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   carrilActual: 1
-  centroColliderNormal: {x: 0, y: 0, z: 0.051914692}
-  "tama\xF1oColliderNormal": {x: 1, y: 1, z: 1.1038294}
-  centroColliderDesliz: {x: 0, y: 0, z: 0}
-  "tama\xF1oColliderDesliz": {x: 0, y: 0, z: 0}
+  centroColliderNormal: {x: 0, y: 0.37051278, z: 0.031099916}
+  "tama\xF1oColliderNormal": {x: 1, y: 1.7410256, z: 0.7557006}
+  centroColliderDesliz: {x: 0, y: -0.18133284, z: 0}
+  "tama\xF1oColliderDesliz": {x: 1, y: 0.63733435, z: 1}
   tiempoMaximoCambioCarril: 0.466
   animatorJugador: {fileID: 1825946764}
 --- !u!4 &1709144124

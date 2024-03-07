@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class ObstaculoManager : MonoBehaviour
@@ -30,6 +31,9 @@ public class ObstaculoManager : MonoBehaviour
     [SerializeField] private float probabilidadSpawnMultiple;
     //Posición del último grupo de obstáculos colocado.
     [SerializeField] private Vector3 posicionUltimoGrupo;
+
+    private Vector3 posicionUltimoGrupoDerecha;
+    private Vector3 posicionUltimoGrupoIzquierda;
 
     [SerializeField] private GameObject prefabObstaculo;
     [SerializeField] private int tamañoPool;
@@ -147,48 +151,36 @@ public class ObstaculoManager : MonoBehaviour
         distancia = TechoEnUnidad(distancia);
     }
 
-    // Devuelve una lista cuyos carriles están habilitados solamente si ese carril está habilitado en ambas listas.
-    // La posición de los carriles se toma de la lista1.
-    private List<Carril> TamizarCarriles(List<Carril> lista1, List<Carril> lista2)
+    public void RestablecerUltimoObstaculo(Vector3 posicion, TipoRama tipoRama)
     {
-        if(lista1.Count != lista2.Count)
+        switch(tipoRama)
         {
-            Debug.Log("Las listas de carriles tamizadas tienen una cantidad de carriles diferentes.");
+            case TipoRama.Derecha:
+                posicionUltimoGrupoDerecha = posicion;
+                break;
+            case TipoRama.Izquierda:
+                posicionUltimoGrupoIzquierda = posicion;
+                break;
+            case TipoRama.Central:
+                posicionUltimoGrupo = posicion;
+                break;
         }
-
-        List<Carril> resultados = new List<Carril>();
-
-        Carril scriptCarrilLista1;
-        Carril scriptCarrilLista2;
-
-        for(int i = 0; i < lista1.Count; i++)
-        {
-            scriptCarrilLista1 = lista1[i].GetComponent<Carril>();
-            for(int j = 0; j < lista2.Count; j++)
-            {
-                scriptCarrilLista2 = lista2[j].GetComponent<Carril>();
-                if(scriptCarrilLista1.Tipo == scriptCarrilLista2.Tipo)
-                {
-
-                    Carril nuevoCarril;
-
-                    if(!scriptCarrilLista1.Habilitado)
-                    {
-                        nuevoCarril = scriptCarrilLista1;
-                    }
-                    else
-                    {
-                        nuevoCarril = scriptCarrilLista2;
-                    }
-                    resultados.Add(nuevoCarril);
-                }
-            }
-        }
-
-        return resultados;
     }
 
-    public void SpawnearObstaculos(GameObject pistaAnterior, GameObject pista, GameObject pistaSiguiente)
+    public void JugadorDoblo(TipoRama tipoRama)
+    {
+        switch(tipoRama)
+        {
+            case TipoRama.Izquierda:
+                posicionUltimoGrupo = posicionUltimoGrupoIzquierda;
+                break;
+            case TipoRama.Derecha:
+                posicionUltimoGrupo = posicionUltimoGrupoDerecha;
+                break;
+        }
+    }
+
+    public void SpawnearObstaculos(GameObject pistaAnterior, GameObject pista, GameObject pistaSiguiente, TipoRama tipoRama = TipoRama.Central)
     {
         VerificarDistancias();
 
@@ -205,8 +197,15 @@ public class ObstaculoManager : MonoBehaviour
 
         float margenAleatorio = PisoEnUnidad(Random.Range(0, varianzaPosicion));
 
+        Vector3 posUltimoGrupo = tipoRama switch
+        {
+            TipoRama.Izquierda => posicionUltimoGrupoIzquierda,
+            TipoRama.Derecha => posicionUltimoGrupoDerecha,
+            _ => posicionUltimoGrupo
+        };
+
         float distanciaUltimoGrupoAFinalPista = Vector3.Dot(pista.transform.position + (scriptPista.Longitud / 2) * scriptPista.EjeMovimiento.Vectorizado - 
-        posicionUltimoGrupo, scriptPista.EjeMovimiento.Vectorizado);
+        posUltimoGrupo, scriptPista.EjeMovimiento.Vectorizado);
 
         //Este while calcula la distancia del último grupo de obstáculos spawneado con la posición del final de la pista considerada.
 
@@ -215,10 +214,10 @@ public class ObstaculoManager : MonoBehaviour
             //Checkea si el último grupo fue spawneado a una distancia mayor a distancia + margenAleatorio
             if(distanciaUltimoGrupoAFinalPista > scriptPista.Longitud + distancia + margenAleatorio)
             {
-                posicionUltimoGrupo = pista.transform.position - (scriptPista.Longitud /2 + distancia + margenAleatorio) * scriptPista.EjeMovimiento.Vectorizado;
+                posUltimoGrupo = pista.transform.position - (scriptPista.Longitud /2 + distancia + margenAleatorio) * scriptPista.EjeMovimiento.Vectorizado;
             }
 
-            Vector3 posicionNuevoGrupo = posicionUltimoGrupo + scriptJugador.EjeMovimiento.Vectorizado * (distancia + margenAleatorio);
+            Vector3 posicionNuevoGrupo = posUltimoGrupo + scriptPista.EjeMovimiento.Vectorizado * (distancia + margenAleatorio);
             
             //Se analiza si considerar los carriles de la pista siguiente o anterior para el posicionamiento de obstáculos
             //en carriles habilitados según la distancia del grupo a dichas pistas.
@@ -227,12 +226,12 @@ public class ObstaculoManager : MonoBehaviour
 
             if(pistaSiguiente != null)
             {   
-                BehaviourPista scriptSiguientePista = pistaSiguiente.GetComponentInChildren<BehaviourPista>();
+                BehaviourPista scriptPistaSiguiente = pistaSiguiente.GetComponentInChildren<BehaviourPista>();
 
                 //Distancia del grupo de obstáculos al comienzo de la pista siguiente.
 
-                float distanciaGrupoPistaSiguiente = Vector3.Dot(pistaSiguiente.transform.position - posicionNuevoGrupo, scriptJugador.EjeMovimiento.Vectorizado)
-                - scriptSiguientePista.Longitud / 2;
+                float distanciaGrupoPistaSiguiente = Vector3.Dot(pistaSiguiente.transform.position - posicionNuevoGrupo, scriptPistaSiguiente.EjeMovimiento.Vectorizado)
+                - scriptPistaSiguiente.Longitud / 2;
 
                 if(distanciaGrupoPistaSiguiente < distanciaPistaSiguiente)
                 {
@@ -245,7 +244,7 @@ public class ObstaculoManager : MonoBehaviour
 
                 //Distancia del grupo al final de la pista anterior
 
-                float distanciaGrupoPistaAnterior = Vector3.Dot(posicionNuevoGrupo - pistaAnterior.transform.position, scriptJugador.EjeMovimiento.Vectorizado)
+                float distanciaGrupoPistaAnterior = Vector3.Dot(posicionNuevoGrupo - pistaAnterior.transform.position, scriptPistaAnterior.EjeMovimiento.Vectorizado)
                 - scriptPistaAnterior.Longitud / 2;
 
                 if(distanciaGrupoPistaAnterior < distanciaPistaAnterior)
@@ -302,7 +301,7 @@ public class ObstaculoManager : MonoBehaviour
 
                     if(ObtenerObstaculoDesactivado() == null)
                     {
-                        lugarLibreAleatorio.Obstaculo = AgregarObstaculoAlPool("");
+                        lugarLibreAleatorio.Obstaculo = AgregarObstaculoAlPool("obstaculo");
                     }
                     else
                     {
@@ -334,15 +333,26 @@ public class ObstaculoManager : MonoBehaviour
                 }
             }
 
-            posicionUltimoGrupo = nuevoGrupo.Posicion;
+            posUltimoGrupo = nuevoGrupo.Posicion;
+
+            switch(tipoRama)
+            {
+                case TipoRama.Derecha:
+                    posicionUltimoGrupoDerecha = posUltimoGrupo;
+                    break;
+                case TipoRama.Izquierda:
+                    posicionUltimoGrupoIzquierda = posUltimoGrupo;
+                    break;
+                case TipoRama.Central:
+                    posicionUltimoGrupo = posUltimoGrupo;
+                    break;
+            }
 
             gruposObstaculos.Add(nuevoGrupo);
 
-            margenAleatorio = PisoEnUnidad(Random.Range(-varianzaPosicion,varianzaPosicion));
-
             distanciaUltimoGrupoAFinalPista = Vector3.Dot(pista.transform.position +
              (scriptPista.Longitud / 2) * scriptPista.EjeMovimiento.Vectorizado - 
-            posicionUltimoGrupo, scriptPista.EjeMovimiento.Vectorizado);
+            posUltimoGrupo, scriptPista.EjeMovimiento.Vectorizado);
         }
 
         scriptPista.gruposObstaculos = gruposObstaculos;

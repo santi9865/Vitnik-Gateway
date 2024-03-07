@@ -14,7 +14,6 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private StatsJugador statsJugador;
     [SerializeField] private BehaviourCamera scriptCamara;
-    [SerializeField] private MonedaManager monedaManager;
     [SerializeField] private PistaManager pistaManager;
 
     private void Awake()
@@ -67,25 +66,12 @@ public class GameManager : MonoBehaviour
         GameOver.Invoke();
     }
 
-    public void JugadorDobloDerecha(GameObject pista, Rama rama)
+    public void JugadorDoblo(GameObject pista, Rama rama)
     {
         pistaManager.CambiarSendaPrincipal(pista, rama);
 
         rama.AlinearSegunPadre(pista.GetComponent<BehaviourPista>().EjeMovimiento);
 
         scriptCamara.AcomodarCamara(rama.EjeMovimiento);
-
-        monedaManager.JugadorDoblo();
-    }
-
-    public void JugadorDobloIzquierda(GameObject pista, Rama rama)
-    {
-        pistaManager.CambiarSendaPrincipal(pista, rama);
-
-        rama.AlinearSegunPadre(pista.GetComponent<BehaviourPista>().EjeMovimiento);
-
-        scriptCamara.AcomodarCamara(rama.EjeMovimiento);
-
-        monedaManager.JugadorDoblo();
     }
 }

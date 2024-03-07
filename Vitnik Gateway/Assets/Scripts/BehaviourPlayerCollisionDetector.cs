@@ -39,6 +39,9 @@ public class BehaviourPlayerCollisionDetector : MonoBehaviour
             case "ColliderFinPista":
                 scriptMovimientoJugador.ColisionObstaculo(ObstacleType.FinPista);
                 break;
+            case "ColliderRotura":
+                scriptMovimientoJugador.ColisionObstaculo(ObstacleType.Rotura);
+                break;
         }
     }
 
@@ -57,5 +60,5 @@ public class BehaviourPlayerCollisionDetector : MonoBehaviour
 
 public enum ObstacleType
 {
-    Solid, Moneda, FinPista
+    Solid, Moneda, FinPista, Rotura
 }
