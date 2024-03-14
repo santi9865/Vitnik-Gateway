@@ -30,9 +30,12 @@ public class LugarObstaculo
         }
     }
 
+    public bool ObstaculoColocado {get; set;}
+
     public LugarObstaculo()
     {
         Libre = true;
+        ObstaculoColocado = false;
     }
 
     public LugarObstaculo(int carril, Altura altura, bool libre, GameObject obstaculo)
@@ -41,6 +44,7 @@ public class LugarObstaculo
         Altura = altura;
         Libre = libre;
         Obstaculo = obstaculo;
+        ObstaculoColocado = false;
     }
 
     public void DesactivarObstaculo()

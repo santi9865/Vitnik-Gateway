@@ -35,7 +35,12 @@ public class ObstaculoManager : MonoBehaviour
     private Vector3 posicionUltimoGrupoDerecha;
     private Vector3 posicionUltimoGrupoIzquierda;
 
-    [SerializeField] private GameObject prefabObstaculo;
+    [SerializeField] private GameObject prefabCaja;
+    [SerializeField] private GameObject prefabTronco;
+    [SerializeField] private GameObject prefabTroncoSuspendido;
+    [SerializeField] private GameObject prefabPiedra;
+    [SerializeField] private GameObject prefabCajaAlta;
+
     [SerializeField] private int tamañoPool;
     [SerializeField] private GameObject contenedorObstaculos;
     private List<GameObject> poolObstaculos;
@@ -54,9 +59,18 @@ public class ObstaculoManager : MonoBehaviour
         }
     }
 
-    private GameObject AgregarObstaculoAlPool(string nombre)
+    private GameObject AgregarObstaculoAlPool(string nombre, TipoObstaculo tipo = TipoObstaculo.Caja)
     {
-        GameObject obstaculo = Instantiate(prefabObstaculo, Vector3.zero, prefabObstaculo.transform.rotation);
+        GameObject obstaculo = tipo switch
+        {
+            TipoObstaculo.Tronco => prefabTronco,
+            TipoObstaculo.TroncoSuspendido => prefabTroncoSuspendido,
+            TipoObstaculo.Piedra => prefabPiedra,
+            TipoObstaculo.CajaAlta => prefabCajaAlta,
+            _ => prefabCaja
+        };
+        
+        obstaculo = Instantiate(obstaculo, Vector3.zero, obstaculo.transform.rotation);
         obstaculo.SetActive(false);
         obstaculo.transform.SetParent(contenedorObstaculos.transform);
         poolObstaculos.Add(obstaculo);
