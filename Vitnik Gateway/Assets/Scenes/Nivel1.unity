@@ -4429,13 +4429,18 @@ MonoBehaviour:
   distanciaPistaSiguiente: 5
   distanciaPistaAnterior: 5
   margenDeManiobra: 1
-  probabilidadSpawnMultiple: 0.7
+  probabilidadSpawnMultiple: 1
   posicionUltimoGrupo: {x: 0, y: 0, z: 85.62441}
-  prefabCaja: {fileID: 0}
-  prefabTronco: {fileID: 0}
-  prefabTroncoSuspendido: {fileID: 0}
-  prefabPiedra: {fileID: 0}
-  prefabCajaAlta: {fileID: 0}
+  prefabCaja: {fileID: 3558656423110874392, guid: a61f40b8354243945a81c2b1e6584798,
+    type: 3}
+  prefabTronco: {fileID: 296805969375767167, guid: b247ebcc7e70e074e9babfbce9311926,
+    type: 3}
+  prefabTroncoSuspendido: {fileID: 657728653599014353, guid: e5088aee44796ad4abf312190c65c81e,
+    type: 3}
+  prefabPiedra: {fileID: 5610749407331262318, guid: b3b33d80ee1395841a14b291a0a96d4d,
+    type: 3}
+  prefabCajaAlta: {fileID: 8934008352680330896, guid: f8a2aaa6ed69dcc4a9bde5835fcc0ffa,
+    type: 3}
   "tama\xF1oPool": 20
   contenedorObstaculos: {fileID: 1570015931}
   scriptJugador: {fileID: 1709144120}

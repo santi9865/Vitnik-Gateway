@@ -39,6 +39,7 @@ public class BehaviourMiniPantallas : MonoBehaviour
         {
             GameManager.Instancia.PauseGame();
             pantallaPausa.Activar();
+
         }
         else
         {

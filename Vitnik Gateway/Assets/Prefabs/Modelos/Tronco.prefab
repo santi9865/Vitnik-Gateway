@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4105730681519538016}
   - component: {fileID: 2242382517354367914}
   - component: {fileID: 1108735606761340622}
+  - component: {fileID: 4953510561722004765}
   m_Layer: 0
   m_Name: Tronco
   m_TagString: ObstaculoSolido
@@ -97,5 +98,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tipo: 1
-  Colocado: 0
-  _offset: {x: 0, y: 0, z: 0}
+  _offsetHorizontal: 0
+  _offsetVertical: 0
+--- !u!65 &4953510561722004765
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 296805969375767167}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.3672967, y: 2.7336745, z: 2.0227475}
+  m_Center: {x: -0.015328108, y: -0.117303945, z: 0.0005201235}

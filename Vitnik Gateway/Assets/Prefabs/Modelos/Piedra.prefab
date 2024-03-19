@@ -98,8 +98,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tipo: 3
-  Colocado: 0
-  _offset: {x: 0, y: 0, z: 0}
+  _offsetHorizontal: 0.5
+  _offsetVertical: 0.91
 --- !u!65 &2175897983367230668
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -80,17 +80,19 @@ public class ObstaculoManager : MonoBehaviour
         return obstaculo;
     }
 
-    private GameObject ObtenerObstaculoDesactivado()
+    private GameObject ObtenerObstaculoDesactivado(TipoObstaculo tipo = TipoObstaculo.Caja)
     {
         foreach(GameObject obstaculo in poolObstaculos)
         {
-            if(!obstaculo.activeSelf)
+            Obstaculo scriptObstaculo = obstaculo.GetComponent<Obstaculo>();
+
+            if(!obstaculo.activeSelf && scriptObstaculo.Tipo == tipo)
             {
                 return obstaculo;
             }
         }
 
-        return null;
+        return AgregarObstaculoAlPool("obstaculo",tipo);
     }
 
     private GameObject PosicionarObstaculo(GameObject obstaculo, Vector3 posicion, Quaternion rotacion)
@@ -194,6 +196,68 @@ public class ObstaculoManager : MonoBehaviour
         }
     }
 
+    public GameObject SpawnearObstaculo(TipoObstaculo tipo, LugarObstaculo lugarReferencia, GrupoObstaculos grupoReferencia, Eje ejeMovimiento)
+    {
+        GameObject nuevoObstaculo = ObtenerObstaculoDesactivado(tipo);
+
+        Obstaculo scriptObstaculo = nuevoObstaculo.GetComponent<Obstaculo>();
+
+        nuevoObstaculo.SetActive(true);
+
+        float posicionVertical;
+
+        if(lugarReferencia.Altura == Altura.Arriba)
+        {
+            posicionVertical = alturaSegundoPiso;
+        }
+        else
+        {
+            posicionVertical = alturaPrimerPiso;
+        }
+
+        float offsetCorregido = scriptObstaculo.OffsetHorizontal;
+
+        if(ejeMovimiento.Sentido == EjeSentido.Negativo)
+        {
+            offsetCorregido *= -1;
+        }
+
+        lugarReferencia.Obstaculo = PosicionarObstaculo(nuevoObstaculo, Vector3.Scale(grupoReferencia.Carriles[lugarReferencia.Carril].transform.position + offsetCorregido * ejeMovimiento.VectorAxisPerpendicular,
+        ejeMovimiento.VectorAxisPerpendicular) + (posicionVertical + scriptObstaculo.OffsetVertical) * Vector3.up + 
+        Vector3.Scale(grupoReferencia.Posicion, ejeMovimiento.VectorAxisParalelo), nuevoObstaculo.transform.rotation);
+
+        lugarReferencia.ObstaculoColocado = true;
+
+        float anguloRotacion = Eje.EjeZPositivo.AngulosA(ejeMovimiento);
+        nuevoObstaculo.transform.Rotate(0,anguloRotacion, 0, Space.World);
+
+        return nuevoObstaculo;
+    }
+
+    private bool EstaOcupadoArriba(LugarObstaculo lugar, GrupoObstaculos grupo)
+    {
+        if(lugar.Altura == Altura.Abajo)
+        {
+            LugarObstaculo lugarArriba = grupo.Lugares[lugar.Carril * 2 + 1];
+
+            if(!lugarArriba.Libre && !lugarArriba.ObstaculoColocado)
+            {
+                return true;
+            }
+            else if(lugarArriba.Obstaculo != null)
+            {
+                if(lugarArriba.Obstaculo.GetComponent<Obstaculo>().Tipo == TipoObstaculo.Caja)
+                {
+                    lugarArriba.Obstaculo = null;
+                    lugarArriba.ObstaculoColocado = false;
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public void SpawnearObstaculos(GameObject pistaAnterior, GameObject pista, GameObject pistaSiguiente, TipoRama tipoRama = TipoRama.Central)
     {
         VerificarDistancias();
@@ -292,20 +356,13 @@ public class ObstaculoManager : MonoBehaviour
                 nuevoGrupo.Lugares.Add(nuevoLugar);
             }
 
-            LugarObstaculo lugarLibreAleatorio =  nuevoGrupo.DevolverLugarLibreAleatorioHabilitado(); 
+            LugarObstaculo lugarLibreAleatorio =  nuevoGrupo.DevolverLugarLibreAleatorioHabilitado();
 
-            if(ObtenerObstaculoDesactivado() == null)
-            {
-                lugarLibreAleatorio.Obstaculo = AgregarObstaculoAlPool("");
-            }
-            else
-            {
-                lugarLibreAleatorio.Obstaculo = ObtenerObstaculoDesactivado();
-            }
+            lugarLibreAleatorio.Libre = false;
 
-            lugarLibreAleatorio.Obstaculo.SetActive(true);
+            int lugaresPosibles = nuevoGrupo.CantidadLugaresLibresHabilitados - 1;
             
-            for(int i = 0; i < nuevoGrupo.CantidadLugaresLibresHabilitados - 1; i++)
+            for(int i = 0; i < lugaresPosibles; i++)
             {
                 numeroRandom = Random.Range(0f,1f);
 
@@ -313,37 +370,50 @@ public class ObstaculoManager : MonoBehaviour
                 {
                     lugarLibreAleatorio = nuevoGrupo.DevolverLugarLibreAleatorioHabilitado();
 
-                    if(ObtenerObstaculoDesactivado() == null)
+                    lugarLibreAleatorio.Libre = false;
+                }
+            }
+            
+            if(!nuevoGrupo.Lugares[3].Libre)
+            {
+                if(!nuevoGrupo.Lugares[1].Libre && !nuevoGrupo.Lugares[5].Libre)
+                {
+                    SpawnearObstaculo(TipoObstaculo.TroncoSuspendido, nuevoGrupo.Lugares[3], nuevoGrupo, scriptPista.EjeMovimiento);
+                    nuevoGrupo.Lugares[1].ObstaculoColocado = true;
+                    nuevoGrupo.Lugares[5].ObstaculoColocado = true;
+                }
+                else if(!nuevoGrupo.Lugares[2].Libre)
+                {
+                    if(!nuevoGrupo.Lugares[4].Libre && !nuevoGrupo.Lugares[5].Libre)
                     {
-                        lugarLibreAleatorio.Obstaculo = AgregarObstaculoAlPool("obstaculo");
+                        SpawnearObstaculo(TipoObstaculo.Piedra, nuevoGrupo.Lugares[2], nuevoGrupo, scriptPista.EjeMovimiento);
+                        nuevoGrupo.Lugares[3].ObstaculoColocado = true;
+                        nuevoGrupo.Lugares[4].ObstaculoColocado = true;
+                        nuevoGrupo.Lugares[5].ObstaculoColocado = true;
                     }
-                    else
+                    else if(!nuevoGrupo.Lugares[0].Libre && !nuevoGrupo.Lugares[1].Libre)
                     {
-                        lugarLibreAleatorio.Obstaculo = ObtenerObstaculoDesactivado();
+                        SpawnearObstaculo(TipoObstaculo.Piedra, nuevoGrupo.Lugares[0], nuevoGrupo, scriptPista.EjeMovimiento);
+                        nuevoGrupo.Lugares[3].ObstaculoColocado = true;
+                        nuevoGrupo.Lugares[2].ObstaculoColocado = true;
+                        nuevoGrupo.Lugares[1].ObstaculoColocado = true;
                     }
-
-                    lugarLibreAleatorio.Obstaculo.SetActive(true);
                 }
             }
 
             foreach(LugarObstaculo lugar in nuevoGrupo.Lugares)
             {
-                if(!lugar.Libre)
+                if(!lugar.Libre && !lugar.ObstaculoColocado)
                 {
-                    float posicionVertical;
-
-                    if(lugar.Altura == Altura.Arriba)
+                    if(EstaOcupadoArriba(lugar, nuevoGrupo))
                     {
-                        posicionVertical = alturaSegundoPiso;
+                        SpawnearObstaculo(TipoObstaculo.CajaAlta, lugar, nuevoGrupo, scriptPista.EjeMovimiento);
+                        nuevoGrupo.Lugares[lugar.Carril * 2 + 1].ObstaculoColocado = true;
                     }
                     else
                     {
-                        posicionVertical = alturaPrimerPiso;
+                        SpawnearObstaculo(TipoObstaculo.Caja, lugar, nuevoGrupo, scriptPista.EjeMovimiento);
                     }
-
-                    PosicionarObstaculo(lugar.Obstaculo, Vector3.Scale(nuevoGrupo.Carriles[lugar.Carril].transform.position,
-                     scriptPista.EjeMovimiento.VectorAxisPerpendicular) + posicionVertical * Vector3.up + 
-                     Vector3.Scale(nuevoGrupo.Posicion, scriptPista.EjeMovimiento.VectorAxisParalelo), lugar.Obstaculo.transform.rotation);
                 }
             }
 
