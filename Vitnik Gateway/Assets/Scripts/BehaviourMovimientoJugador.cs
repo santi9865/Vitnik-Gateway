@@ -65,6 +65,8 @@ public class BehaviourMovimientoJugador : MonoBehaviour
         Orientacion = new Vector3(0,1,0);
 
         posicionAnterior = gameObject.transform.position;
+
+        SubscribeEvents();
     }
 
     void Update()
@@ -137,6 +139,82 @@ public class BehaviourMovimientoJugador : MonoBehaviour
             EjecutarTrayectoriaSalto();
         }
     }
+
+    #region Handle Swipes
+
+    private void SubscribeEvents()
+    {
+        SwipeManager swipeManager = GameManager.Instancia.gameObject.GetComponent<SwipeManager>();
+
+        swipeManager.SwipeRight += HandleSwipeRight;
+        swipeManager.SwipeLeft += HandleSwipeLeft;
+        swipeManager.SwipeUp += HandleSwipeUp;
+        swipeManager.SwipeDown += HandleSwipeDown;
+    }
+
+    private void HandleSwipeRight()
+    {
+        if(!vivo)
+        {
+            return;
+        }
+
+        if(!cambiandoCarril && !deslizando)
+        {
+            MoverseALaDerecha();
+        }
+
+        if(!doblando && !cambiandoCarril && !deslizando && !saltando && puedeDoblarIzquierda)
+        {
+            DoblarIzquierda();
+        }
+    }
+
+    private void HandleSwipeLeft()
+    {
+        if(!vivo)
+        {
+            return;
+        }
+
+        if(!cambiandoCarril && !deslizando)
+        {
+            MoverseALaIzquierda();
+        }
+
+        if(!doblando && !cambiandoCarril && !deslizando && !saltando && puedeDoblarIzquierda)
+        {
+            DoblarIzquierda();
+        }
+    }
+
+    private void HandleSwipeUp()
+    {
+        if(!vivo)
+        {
+            return;
+        }
+
+        if(!saltando && !cambiandoCarril)
+        {
+            Saltar();
+        }
+    }
+
+    private void HandleSwipeDown()
+    {
+        if(!vivo)
+        {
+            return;
+        }
+
+        if(!cambiandoCarril && !saltando)
+        {
+            Deslizar();
+        }
+    }
+
+    #endregion
 
     #region Deslizamiento
 

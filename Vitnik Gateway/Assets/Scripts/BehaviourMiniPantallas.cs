@@ -8,6 +8,9 @@ public class BehaviourMiniPantallas : MonoBehaviour
     [SerializeField] private BehaviourMiniPantallaPausa pantallaPausa;
     [SerializeField] private BehaviourMiniPantallaOpciones pantallaOpciones;
 
+    private bool pGameOverOculta = false;
+    private bool pPausaOculta = false;
+
     void Start()
     {
         GameManager.Instancia.GameOver += GameOver;
@@ -52,7 +55,18 @@ public class BehaviourMiniPantallas : MonoBehaviour
     {
         if(nuevoEstado)
         {
-            pantallaPausa.Desactivar();
+            if(pantallaPausa.gameObject.activeSelf)
+            {
+                pantallaPausa.Desactivar();
+                pPausaOculta = true;
+            }
+
+            if(pantallaGameOver.gameObject.activeSelf)
+            {
+                pantallaGameOver.Desactivar();
+                pGameOverOculta = true;
+            }
+
             pantallaOpciones.Activar();
             pantallaOpciones.Actualizar();
         }
@@ -60,16 +74,30 @@ public class BehaviourMiniPantallas : MonoBehaviour
         {
             SoundManager.Instancia.GuardarOpciones();
             pantallaOpciones.Desactivar();
-            pantallaPausa.Activar();
+            
+            if(pPausaOculta)
+            {
+                pantallaPausa.Activar();
+                pPausaOculta = false;
+            }
+
+            if(pGameOverOculta)
+            {
+                pantallaGameOver.Activar();
+                pGameOverOculta = false;
+            }
         }
     }
 
     public void CerrarTodo()
     {
-        SoundManager.Instancia.GuardarOpciones();
-        pantallaOpciones.Desactivar();
-        pantallaPausa.Desactivar();
-        GameManager.Instancia.UnPauseGame();
+        if(!pantallaGameOver.gameObject.activeSelf)
+        {
+            SoundManager.Instancia.GuardarOpciones();
+            pantallaOpciones.Desactivar();
+            pantallaPausa.Desactivar();
+            GameManager.Instancia.UnPauseGame();
+        }
     }
 
     public void IrAMenuPrincipal()

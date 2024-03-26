@@ -98,7 +98,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tipo: 3
-  _offsetHorizontal: 0.5
+  _offsetHorizontal: 0.51
   _offsetVertical: 0.91
 --- !u!65 &2175897983367230668
 BoxCollider:

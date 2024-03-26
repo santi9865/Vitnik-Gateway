@@ -2879,7 +2879,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 875260303}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1590364986}
+        m_TargetAssemblyTypeName: BehaviourMiniPantallas, Assembly-CSharp
+        m_MethodName: PantallaOpcionesSetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &875260303
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6536,6 +6548,7 @@ GameObject:
   - component: {fileID: 2108169939}
   - component: {fileID: 2108169941}
   - component: {fileID: 2108169942}
+  - component: {fileID: 2108169943}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -6599,6 +6612,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nombreDatabase: DatabaseVitnikGateway.db
   tabla: StatsJugador
+--- !u!114 &2108169943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2108169938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 807fb4386c6ce9c4493ffd934049f889, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2128289446
 PrefabInstance:
   m_ObjectHideFlags: 0
